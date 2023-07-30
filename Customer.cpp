@@ -13,6 +13,7 @@ bool Customer::update_information(std::string name, std::string phone, std::stri
 	Person::update_information(name, phone, address, email);
 	return true;
 }
+
 /*
 void Customer::update_information(std::string name, std::string phone, std::string address, std::string email) {
 	Person::update_information(name, phone, address, email);

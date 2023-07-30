@@ -20,7 +20,7 @@ public:
 	// Constructor
 	Customer(std::string name = def_name, std::string phone = def_phone, std::string address = def_address, std::string email = def_email);
 	// Method function
-	bool account_VIP(int);
+	bool account_VIP();
 	bool update_information(std::string, std::string, std::string, std::string);
 	// bool check_information(std::string, std::string, std::string, std::string);
 	// Deconstructor
