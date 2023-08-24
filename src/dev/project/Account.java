@@ -16,9 +16,9 @@ public class Account {
         this.id = id ;
         this.password = randomPassword(defaultpasswordLength);
         this.status = status.ACTIVE;
-        System.out.println("Username: " + id);
-        System.out.println("Your current password is: " + this.password);
-        System.out.println(resetPassword() ? "You have successfully changed your password" : "The current password is the default password");
+//        System.out.println("Username: " + id);
+//        System.out.println("Your current password is: " + this.password);
+//        System.out.println(resetPassword() ? "You have successfully changed your password" : "The current password is the default password");
     }
     private String getID(){
         ID++;
@@ -47,5 +47,14 @@ public class Account {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id='" + id + '\'' +
+                ", password='" + password + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
