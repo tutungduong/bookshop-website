@@ -1,32 +1,29 @@
-# Prerequisites
-*.d
+### IntelliJ IDEA ###
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
-# Precompiled Headers
-*.gch
-*.pch
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+### VS Code ###
+.vscode/
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+### Mac OS ###
+.DS_Store
