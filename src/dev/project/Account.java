@@ -24,6 +24,11 @@ public class Account {
         ID++;
         return new String(String.valueOf(ID));
     }
+
+    public String getId() {
+        return id;
+    }
+
     // Generate a random password
     private String randomPassword(int length){
         String passwordSet="ABCDEFGHIJKLMNOPQRSTUWXYZ0123456789!@#$%";
