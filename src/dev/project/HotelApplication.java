@@ -52,7 +52,13 @@ public class HotelApplication {
 //        for (HotelBranch branch : myHotel.getLocations()) {
 //            System.out.println(branch);
 //        }
-        RoomKey rom = new RoomKey();
-        System.out.println(rom.toString());
+
+        int count = 0 ;
+        for(int i = 0 ; i < 100 ; ++i){
+            Room rom = new Room();
+            System.out.println(rom.toString());
+            ++count;
+        }
+        System.out.println(count);
     }
 }

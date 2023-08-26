@@ -1,5 +1,6 @@
 package dev.project;
 
+import javax.print.DocFlavor;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -12,6 +13,8 @@ public class Room {
     private boolean isSmoking;
     private List<RoomKey> keys;
     private List<RoomHousekeeping> housekeepingLog;
+    private List<Room> roomList;
+
 
     private static int id = 100;
     protected static Random random = new Random();
@@ -21,23 +24,66 @@ public class Room {
         this.status = Enums.RoomStatus.values()[random.nextInt(Enums.RoomStatus.values().length)];
         this.bookingPrice = 50 + random.nextDouble() * 150;
         this.isSmoking = random.nextBoolean();
+        this.roomList = new ArrayList<>();
+        this.keys = new ArrayList<>();
+        keys.add(new RoomKey());
     }
+//    private String getID(){
+//        for (int i = id; i < i*10; i += 100) {
+//            for (int j = 0; j < 10; j++) {
+//                return new String(String.valueOf(i+j));
+//            }
+//        }
+//        return null;
+//    }
     private String getID(){
-        for (int i = id; i < i*10; i += 100) {
-            for (int j = 0; j < 10; j++) {
-                return new String(String.valueOf(i+j));
+        ++id;
+        return new String(String.valueOf(id));
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public Enums.RoomStatus getStatus() {
+        return status;
+    }
+
+    public boolean isRoomAvailable(String roomNumber){
+        Room room = findRoom(roomNumber);
+        if(room != null){
+            if(room.getStatus() != status.AVAILABLE){
+                return true;
+            }
+        }
+        return false;
+    }
+    private Room findRoom(String roomNumber){
+        for(Room room : roomList){
+            if(room.getRoomNumber().equals(roomNumber)){
+                return room;
             }
         }
         return null;
     }
-    public boolean isRoomAvailable(){
-        return false;
-    }
     public boolean checkin(){
-            return false;
+        return false;
     }
     public boolean checkout(){
             return false;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomNumber='" + roomNumber + '\'' +
+                ", style=" + style +
+                ", status=" + status +
+                ", bookingPrice=" + bookingPrice +
+                ", isSmoking=" + isSmoking +
+                ", keys=" + keys +
+                '}';
     }
 }
 
