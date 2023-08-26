@@ -10,12 +10,12 @@ public class Enums {
     }
 
     enum RoomStatus {
-        AVAILABLE,
-        RESERVED,
-        OCCUPIED,
-        NOT_AVAILABLE,
-        BEING_SERVICED,
-        OTHER
+        AVAILABLE, // DANG HOAT DONG
+        RESERVED, // DA DAT TRUOC
+        OCCUPIED,  // DA DUOC THUE
+        NOT_AVAILABLE, // KHONG TON TAI
+        BEING_SERVICED, // DANG SUA CHUA
+        OTHER // KHAC
     }
 
     enum BookingStatus {

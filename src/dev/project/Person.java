@@ -87,9 +87,9 @@ class Guest extends Person implements BookingAction{
         this.totalRoomsCheckedIn = random.nextInt(1,5);
         this.accounts = new ArrayList<>();
     }
-    public List<RoomBooking> getBookings(){
-        return null;
-    }
+//    public List<RoomBooking> getBookings(){
+//        return null;
+//    }
 
     @Override
     public String toString() {
@@ -216,7 +216,24 @@ class Guest extends Person implements BookingAction{
  }
 
  class Housekeeper extends Person {
-    public boolean assignToRoom(){
-        return false;
+    public Housekeeper(){
+        super();
+        this.accountType = accountType.RECEPTIONIST;
     }
-}
+     public boolean assignToRoom() {
+
+     }
+
+     @Override
+     public String toString() {
+         return "Housekeeper{" +
+                 "accountType=" + accountType +
+                 ", names=" + Arrays.toString(names) +
+                 ", addresses=" + Arrays.toString(addresses) +
+                 ", emails=" + Arrays.toString(emails) +
+                 ", phones=" + Arrays.toString(phones) +
+                 ", usernames=" + Arrays.toString(usernames) +
+                 "} " + super.toString();
+     }
+
+ }

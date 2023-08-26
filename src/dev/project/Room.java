@@ -13,29 +13,27 @@ public class Room {
     private boolean isSmoking;
     private List<RoomKey> keys;
     private List<RoomHousekeeping> housekeepingLog;
-    private List<Room> roomList;
+//    private List<Room> roomList;
 
+    public void setStatus(Enums.RoomStatus status) {
+        this.status = status;
+    }
 
     private static int id = 100;
+
     protected static Random random = new Random();
     public Room(){
         this.roomNumber = getID();
         this.style = Enums.RoomStyle.values()[random.nextInt(Enums.RoomStyle.values().length)];
-        this.status = Enums.RoomStatus.values()[random.nextInt(Enums.RoomStatus.values().length)];
+//        this.status = Enums.RoomStatus.values()[random.nextInt(Enums.RoomStatus.values().length)];
+        this.status = status.AVAILABLE;
+//        this.status = status.BEING_SERVICED;
         this.bookingPrice = 50 + random.nextDouble() * 150;
         this.isSmoking = random.nextBoolean();
-        this.roomList = new ArrayList<>();
+//        this.roomList = new ArrayList<>();;
         this.keys = new ArrayList<>();
-        keys.add(new RoomKey());
+        this.housekeepingLog = new ArrayList<>();
     }
-//    private String getID(){
-//        for (int i = id; i < i*10; i += 100) {
-//            for (int j = 0; j < 10; j++) {
-//                return new String(String.valueOf(i+j));
-//            }
-//        }
-//        return null;
-//    }
     private String getID(){
         ++id;
         return new String(String.valueOf(id));
@@ -49,23 +47,21 @@ public class Room {
         return status;
     }
 
-    public boolean isRoomAvailable(String roomNumber){
-        Room room = findRoom(roomNumber);
-        if(room != null){
-            if(room.getStatus() != status.AVAILABLE){
-                return true;
-            }
+    public boolean isRoomAvailable(){
+        if(this.getStatus() == Enums.RoomStatus.AVAILABLE){
+            return true;
         }
         return false;
     }
-    private Room findRoom(String roomNumber){
-        for(Room room : roomList){
-            if(room.getRoomNumber().equals(roomNumber)){
-                return room;
-            }
-        }
-        return null;
-    }
+//    private Room findRoom(String roomNumber){
+//        List<Room> roomList = null;
+//        for(Room room : roomList){
+//            if(room.getRoomNumber().equals(roomNumber)){
+//                return room;
+//            }
+//        }
+//        return null;
+//    }
     public boolean checkin(){
         return false;
     }
@@ -73,6 +69,13 @@ public class Room {
             return false;
     }
 
+    public List<RoomKey> getKeys() {
+        return keys;
+    }
+
+    public List<RoomHousekeeping> getHousekeepingLog() {
+        return housekeepingLog;
+    }
 
     @Override
     public String toString() {
@@ -83,6 +86,7 @@ public class Room {
                 ", bookingPrice=" + bookingPrice +
                 ", isSmoking=" + isSmoking +
                 ", keys=" + keys +
+                ", housekeepingLog=" + housekeepingLog +
                 '}';
     }
 }
@@ -90,6 +94,8 @@ public class Room {
  class RoomKey {
     private String keyId;
     private String barcode;
+//     private Date issuedAt;
+
     private LocalDateTime issuedAt;
     private boolean isActive;
     private boolean isMaster;
@@ -104,7 +110,7 @@ public class Room {
         this.keyId = generatedKey(keySet);
         this.barcode = generatedBarcode(keyCode);
         this.issuedAt = LocalDateTime.now();
-        this.isActive = random.nextBoolean();
+        this.isActive = true;
         this.isMaster = random.nextBoolean();
     }
     private String generatedKey(Set<String> keySet){
@@ -141,10 +147,17 @@ public class Room {
         }
         return new String(password);
     }
-     public boolean assignRoom(Room room) {
-        return false;
-     }
 
+    // SẼ LÀM SAU
+    public boolean assignRoom(Room room) {
+        if (room != null) {
+            if (room.getKeys() != null) {
+                room.getKeys().add(new RoomKey());
+                return true;
+            }
+        }
+        return false;
+    }
      @Override
      public String toString() {
          return "RoomKey{" +
@@ -160,18 +173,38 @@ public class Room {
  class RoomHousekeeping
 {
     private String description;
-    private Date startDatetime;
+    private LocalDateTime startDatetime;
+//    private Date startDatetime;
+
     private int duration;
     private Housekeeper housekeeper;
-
-    public RoomHousekeeping(String description, Date startDatetime, int duration, Housekeeper housekeeper) {
-        this.description = description;
-        this.startDatetime = startDatetime;
-        this.duration = duration;
-        this.housekeeper = housekeeper;
+    protected static Random random = new Random();
+    public RoomHousekeeping() {
+        this.description = "Noi dung gi do giong nhau di cho de fix";
+        this.startDatetime = LocalDateTime.now();
+        this.duration = random.nextInt(10,50);
     }
 
     public boolean addHousekeeping(Room room){
+        if (room != null) {
+            Enums.RoomStatus roomStatus = room.getStatus();
+            if (roomStatus == Enums.RoomStatus.AVAILABLE || roomStatus == Enums.RoomStatus.RESERVED) {
+                room.setStatus(Enums.RoomStatus.BEING_SERVICED);
+                if (housekeeper != null) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "RoomHousekeeping{" +
+                "description='" + description + '\'' +
+                ", startDatetime=" + startDatetime +
+                ", duration=" + duration +
+                ", housekeeper=" + housekeeper +
+                '}';
     }
 }
