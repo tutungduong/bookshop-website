@@ -8,7 +8,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Person {
+interface BookingAction{
+//    Book room: To book a room in the hotel
+    boolean bookRoom();
+//    Update booking: To update a room booking in the hotel
+    boolean updateBooking();
+//    Login/Logout: To log in and out of the hotel management system
+    boolean logIn();
+//    Cancel booking: To cancel a room booking in the hotel
+    boolean cancelBooking();
+//    View booking: To view and verify a room booking
+    boolean viewBookingDetails();
+//    Print booking: To print booking details from the hotel management system
+    boolean printBookingDetails();
+//    Search room/booking: To search for a room or a booking in the hotel management system
+    boolean searchRoomOrBooking();
+//    View account: To view account details and booking status
+    boolean viewAccount();
+//    Register new account: To register a new account for new guests
+    boolean registerNewAccount(String username);
+}
+
+public abstract class Person{
     private String name;
 //    private String address; // tam thoi
     private Address address;
@@ -57,7 +78,7 @@ public abstract class Person {
 }
 
 
-class Guest extends Person {
+class Guest extends Person implements BookingAction{
 
     private int totalRoomsCheckedIn;
     private ArrayList<Account> accounts;
@@ -66,48 +87,9 @@ class Guest extends Person {
         this.totalRoomsCheckedIn = random.nextInt(1,5);
         this.accounts = new ArrayList<>();
     }
-//    public List<RoomBooking> getBookings(){
-//        return null;
-//    }
-//    Book room: To book a room in the hotel
-//
-//    Update booking: To update a room booking in the hotel
-//
-//    Login/Logout: To log in and out of the hotel management system
-//
-//    Cancel booking: To cancel a room booking in the hotel
-//
-//    View booking: To view and verify a room booking
-//
-//    Print booking: To print booking details from the hotel management system
-//
-//    Search room/booking: To search for a room or a booking in the hotel management system
-//
-//    Payment: To pay the room rent to the hotel
-//
-//    View account: To view account details and booking status
-
-//    Register new account: To register a new account for new guests
-      public boolean registerAccount(String username){
-            Account account = findAccount(username);
-            if(account == null){
-                this.accountType = accountType.MEMBER;
-                return accounts.add(new Account(username));
-            }
-            return false;
-      }
-
-      // Find an account that used to exist
-      private Account findAccount(String username){
-        for(Account account : accounts){
-            if(account.getId().equals(username)){
-                return account;
-            }
-        }
+    public List<RoomBooking> getBookings(){
         return null;
-      }
-//    Return room key: To return the room key before checkout
-
+    }
 
     @Override
     public String toString() {
@@ -116,9 +98,69 @@ class Guest extends Person {
                 ", accounts=" + accounts +
                 "} " + super.toString();
     }
+
+    @Override
+    public boolean bookRoom() {
+        return false;
+    }
+
+    @Override
+    public boolean updateBooking() {
+        return false;
+    }
+
+    @Override
+    public boolean logIn() {
+        return false;
+    }
+
+    @Override
+    public boolean cancelBooking() {
+        return false;
+    }
+
+    @Override
+    public boolean viewBookingDetails() {
+        return false;
+    }
+
+    @Override
+    public boolean printBookingDetails() {
+        return false;
+    }
+
+    @Override
+    public boolean searchRoomOrBooking() {
+        return false;
+    }
+
+    @Override
+    public boolean viewAccount() {
+        return false;
+    }
+    //    Register new account: To register a new account for new guests
+    @Override
+    public boolean registerNewAccount(String username) {
+        Account account = findAccount(username);
+        if(account == null){
+            this.accountType = accountType.MEMBER;
+            return accounts.add(new Account(username));
+        }
+        return false;
+    }
+
+    // Find an account that used to exist
+    private Account findAccount(String username){
+        for(Account account : accounts){
+            if(account.getId().equals(username)){
+                return account;
+            }
+        }
+        return null;
+    }
 }
 
- class Receptionist extends Person {
+ class Receptionist extends Person implements BookingAction {
     public List<Member> searchMember(String name){
         return null;
     }
@@ -126,36 +168,52 @@ class Guest extends Person {
         return false;
     }
 
-//    Add room: To add rooms to the hotel management system so guests can book them
-//
-//    Update room: To update room status from available to booked or vice versa
-//
-//    Remove room: To remove a room from the hotel management system so guests can't book it
-//
-//    Book room: To book a room in the hotel
-//
-//    Update booking: To update a room booking in the hotel
-//
-//    Login/Logout: To log in and out of the hotel management system
-//
-//    Cancel booking: To cancel a room booking in the hotel
-//
-//    View booking: To view and verify a room booking
-//
-//    Print booking: To print booking details from the hotel management system
-//
-//    Search room/booking: To search for a room or a booking in the hotel management system
-//
-//    View account: To view account details and booking status
-//
-//    Register new account: To register a new account for new guests
-//
-//    Check in guest: To check in guests to the hotel
-//
-//    Check out guest: To check out guests from the hotel
-//
-//    Issue room key: To issue room keys to guests who checked in
-}
+     @Override
+     public boolean bookRoom() {
+         return false;
+     }
+
+     @Override
+     public boolean updateBooking() {
+         return false;
+     }
+
+     @Override
+     public boolean logIn() {
+         return false;
+     }
+
+     @Override
+     public boolean cancelBooking() {
+         return false;
+     }
+
+     @Override
+     public boolean viewBookingDetails() {
+         return false;
+     }
+
+     @Override
+     public boolean printBookingDetails() {
+         return false;
+     }
+
+     @Override
+     public boolean searchRoomOrBooking() {
+         return false;
+     }
+
+     @Override
+     public boolean viewAccount() {
+         return false;
+     }
+
+     @Override
+     public boolean registerNewAccount(String username) {
+         Guest guest = new Guest();
+         return guest.registerNewAccount(username);
+     }
+ }
 
  class Housekeeper extends Person {
     public boolean assignToRoom(){

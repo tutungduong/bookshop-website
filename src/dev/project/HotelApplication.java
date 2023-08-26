@@ -39,18 +39,20 @@ public class HotelApplication {
 //        for (HotelBranch branch : myHotel.getLocations()) {
 //            System.out.println(branch);
 //        }
-        Hotel myHotel = new Hotel("Khach san");
-
-        ArrayList<HotelBranch> hotelBranches = new ArrayList<>();
-        for(int i = 0 ; i < 10 ; ++i){
-            hotelBranches.add(new HotelBranch());
-            myHotel.addLocation(hotelBranches.get(i));
-        }
-        // Display hotel information
-        System.out.println("Hotel Name: " + myHotel.getName());
-        System.out.println("Hotel Locations: ");
-        for (HotelBranch branch : myHotel.getLocations()) {
-            System.out.println(branch);
-        }
+//        Hotel myHotel = new Hotel("Khach san");
+//
+//        ArrayList<HotelBranch> hotelBranches = new ArrayList<>();
+//        for(int i = 0 ; i < 10 ; ++i){
+//            hotelBranches.add(new HotelBranch());
+//            myHotel.addLocation(hotelBranches.get(i));
+//        }
+//        // Display hotel information
+//        System.out.println("Hotel Name: " + myHotel.getName());
+//        System.out.println("Hotel Locations: ");
+//        for (HotelBranch branch : myHotel.getLocations()) {
+//            System.out.println(branch);
+//        }
+        RoomKey rom = new RoomKey();
+        System.out.println(rom.toString());
     }
 }
