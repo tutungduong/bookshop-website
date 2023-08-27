@@ -216,24 +216,24 @@ class Guest extends Person implements BookingAction{
  }
 
  class Housekeeper extends Person {
+    private boolean isCleaningRoom;
     public Housekeeper(){
         super();
         this.accountType = accountType.RECEPTIONIST;
+        this.isCleaningRoom = false;
     }
-     public boolean assignToRoom() {
 
+     public boolean assignToRoom(){
+        if(!isCleaningRoom){
+            this.isCleaningRoom = true;
+            return true;
+        }
+        return false;
      }
-
      @Override
      public String toString() {
          return "Housekeeper{" +
-                 "accountType=" + accountType +
-                 ", names=" + Arrays.toString(names) +
-                 ", addresses=" + Arrays.toString(addresses) +
-                 ", emails=" + Arrays.toString(emails) +
-                 ", phones=" + Arrays.toString(phones) +
-                 ", usernames=" + Arrays.toString(usernames) +
-                 "} " + super.toString();
+                 super.toString() +
+                 '}';
      }
-
  }

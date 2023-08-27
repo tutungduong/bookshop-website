@@ -52,19 +52,34 @@ public class HotelApplication {
 //        for (HotelBranch branch : myHotel.getLocations()) {
 //            System.out.println(branch);
 //        }
+
+        ArrayList<Housekeeper> housekeepers = new ArrayList<>();
+        for(int i = 0 ; i < 2 ; ++i){
+            housekeepers.add(new Housekeeper());
+            System.out.println(housekeepers.get(i));
+        }
+
         ArrayList<Room> rooms = new ArrayList<>();
         for(int i = 0 ; i < 2 ; ++i){
             rooms.add(new Room());
             System.out.println(rooms.get(i));
         }
-        if(rooms.get(1).isRoomAvailable()){
-            System.out.println("A");
-        }
-        else {
-            System.out.println("B");
-        }
-        RoomKey roomKey = new RoomKey();
-        roomKey.assignRoom(rooms.get(1));
+        RoomHousekeeping roomHousekeeping = new RoomHousekeeping();
+        roomHousekeeping.addHousekeeping(rooms.get(1));
         System.out.println(rooms.get(1));
+//        System.out.println(roomHousekeeping.toString())
+
+//        if( housekeepers.get(0).assignToRoom()){
+//
+//        }
+//        if(rooms.get(1).isRoomAvailable()){
+//            System.out.println("A");
+//        }
+//        else {
+//            System.out.println("B");
+//        }
+//        RoomKey roomKey = new RoomKey();
+//        roomKey.assignRoom(rooms.get(1));
+//        System.out.println(rooms.get(1));
     }
 }

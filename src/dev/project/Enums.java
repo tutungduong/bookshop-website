@@ -3,10 +3,10 @@ package dev.project;
 public class Enums {
     // definition of enumerations used in hotel management system
     enum RoomStyle {
-        STANDARD,
-        DELUXE,
-        FAMILY_SUITE,
-        BUSINESS_SUITE
+        STANDARD, // THUONG
+        DELUXE, // SANG TRONG
+        FAMILY_SUITE, // PHONG GIA DINH
+        BUSINESS_SUITE // PHONG DOANH NGHIEP
     }
 
     enum RoomStatus {

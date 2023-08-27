@@ -73,6 +73,10 @@ public class Room {
         return keys;
     }
 
+    public void setHousekeepingLog(List<RoomHousekeeping> housekeepingLog) {
+        this.housekeepingLog = housekeepingLog;
+    }
+
     public List<RoomHousekeeping> getHousekeepingLog() {
         return housekeepingLog;
     }
@@ -179,32 +183,56 @@ public class Room {
     private int duration;
     private Housekeeper housekeeper;
     protected static Random random = new Random();
+    String[] descriptions = {
+            "Thoroughly cleaned and sanitized the room.",
+            "Changed bed linens and towels.",
+            "Vacuumed and dusted the entire room.",
+            "Cleaned the bathroom fixtures and surfaces.",
+            "Wiped down all surfaces and furniture.",
+            "Replenished amenities and supplies.",
+            "Checked and restocked the minibar.",
+            "Removed trash and disposed of it properly."
+    };
     public RoomHousekeeping() {
-        this.description = "Noi dung gi do giong nhau di cho de fix";
+        this.description = descriptions[random.nextInt(descriptions.length-1)];
         this.startDatetime = LocalDateTime.now();
         this.duration = random.nextInt(10,50);
+        this.housekeeper = null;
     }
 
     public boolean addHousekeeping(Room room){
-        if (room != null) {
-            Enums.RoomStatus roomStatus = room.getStatus();
-            if (roomStatus == Enums.RoomStatus.AVAILABLE || roomStatus == Enums.RoomStatus.RESERVED) {
-                room.setStatus(Enums.RoomStatus.BEING_SERVICED);
-                if (housekeeper != null) {
-                    return true;
-                }
-            }
-        }
+//        if (room != null) {
+//            Enums.RoomStatus roomStatus = room.getStatus();
+//            // Check if the room can be cleaned
+//            if (roomStatus == Enums.RoomStatus.AVAILABLE
+//                    || roomStatus == Enums.RoomStatus.RESERVED) {
+//                    // Change the state of the room to cleaning
+//                    room.setStatus(Enums.RoomStatus.BEING_SERVICED);
+//                    Housekeeper housekeeper1 = new Housekeeper();
+//                    if(housekeeper1.assignToRoom()){
+//                        room.setStatus(Enums.RoomStatus.AVAILABLE);
+//                        room.getHousekeepingLog().add(housekeeper1);
+//                    }
+//                // Returns true to notify that housekeeping was successful
+//                return true;
+//                }
+//        }
+
+    // If none of the conditions in the previous steps are satisfied, the function returns false
         return false;
     }
 
+    public void setHousekeeper(Housekeeper housekeeper) {
+        this.housekeeper = housekeeper;
+    }
     @Override
     public String toString() {
-        return "RoomHousekeeping{" +
+        return "\nRoomHousekeeping{" +
                 "description='" + description + '\'' +
                 ", startDatetime=" + startDatetime +
                 ", duration=" + duration +
                 ", housekeeper=" + housekeeper +
                 '}';
     }
+
 }
