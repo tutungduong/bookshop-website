@@ -1,13 +1,13 @@
-package dev.project;
+package com.hotel_system.config;
+
+import com.hotel_system.constants.AccountStatus;
 
 import java.util.Scanner;
 
 public class Account {
     private String id;
     private String password;
-    private Enums.AccountStatus status;
-
-    private static int ID = 1000;
+    private AccountStatus status;
 
     private int defaultpasswordLength = 10;
 
@@ -16,20 +16,8 @@ public class Account {
         this.id = id ;
         this.password = randomPassword(defaultpasswordLength);
         this.status = status.ACTIVE;
-//        System.out.println("Username: " + id);
-//        System.out.println("Your current password is: " + this.password);
-//        System.out.println(resetPassword() ? "You have successfully changed your password" : "The current password is the default password");
-    }
-    private String getID(){
-        ID++;
-        return new String(String.valueOf(ID));
     }
 
-    public String getId() {
-        return id;
-    }
-
-    // Generate a random password
     private String randomPassword(int length){
         String passwordSet="ABCDEFGHIJKLMNOPQRSTUWXYZ0123456789!@#$%";
         char [] password = new char[length];
@@ -62,4 +50,33 @@ public class Account {
                 ", status=" + status +
                 '}';
     }
+    //        System.out.println("Username: " + id);
+//        System.out.println("Your current password is: " + this.password);
+//        System.out.println(resetPassword() ? "You have successfully changed your password" : "The current password is the default password");
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
 }
