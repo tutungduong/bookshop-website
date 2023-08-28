@@ -99,14 +99,23 @@ class Guest extends Person {
     private List<RoomBooking> bookingList;
 
 
-    public Guest(int totalRoomsCheckedIn) {
+    public Guest() {
         super();
         this.totalRoomsCheckedIn = random.nextInt(1,5);
+        this.bookingList = null;
     }
 
     public Guest(String name, Address address, String email, String phone, Account account, int totalRoomsCheckedIn) {
         super(name, address, email, phone, account);
         this.totalRoomsCheckedIn = totalRoomsCheckedIn;
+    }
+
+    @Override
+    public String toString() {
+        return "Guest{" +
+                "totalRoomsCheckedIn=" + totalRoomsCheckedIn +
+                ", bookingList=" + bookingList +
+                "} " + super.toString();
     }
 
     public int getTotalRoomsCheckedIn() {
@@ -136,9 +145,14 @@ class Guest extends Person {
      }
 
      public List<Member> searchMember(String name){
+
         return  null;
     }
-    public boolean createBooking(){
+    public boolean createBooking(List<RoomBooking> roomBookings){
+        if(roomBookings != null){
+            roomBookings.add(new RoomBooking());
+            return true;
+        }
         return false;
     }
 }

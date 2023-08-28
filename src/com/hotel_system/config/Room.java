@@ -318,7 +318,7 @@ class RoomHousekeeping
 public boolean addHousekeeping(Room room, Housekeeper housekeeper) {
     if (room != null && room.isRoomAvailable() && room.getStatus() != RoomStatus.BEING_SERVICED) {
         if (housekeeper.assignToRoom(room)) {
-            room.setStatus(RoomStatus.AVAILABLE);
+//            room.setStatus(RoomStatus.AVAILABLE);
             return true;
         }
     }

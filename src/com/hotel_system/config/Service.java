@@ -1,24 +1,41 @@
 package com.hotel_system.config;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+
+// Cac loai dich vu
 public abstract class Service {
-    private Date issueAt;
+    private LocalDateTime issueAt;
 
     public boolean addInvoiceItem(Invoice invoice){
         return false;
     }
 
-    public Date getIssueAt() {
+    public LocalDateTime getIssueAt() {
         return issueAt;
     }
 
-    public void setIssueAt(Date issueAt) {
+    public void setIssueAt(LocalDateTime issueAt) {
         this.issueAt = issueAt;
     }
 }
 
+
+
+
 class Amenity extends Service {
+//    Amenity Service: This could include services that provide convenience and comfort to hotel guests. It might encompass:
+//    Spa and Relaxation: Beauty treatments, steam rooms, massages, and other relaxation therapies.
+//    Fitness Center: Equipped gym facilities for guests to exercise and maintain their health.
+//    Swimming Pool: Swimming pool facilities for guests to relax in the water.
+//    Entertainment Areas: This could involve children's play areas, game rooms, mini-golf, and various entertainment amenities.
     private String name;
     private String description;
+
+    public Amenity(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     public String getName() {
         return name;
@@ -38,8 +55,18 @@ class Amenity extends Service {
 }
 
 class RoomService extends Service {
+//    Room Service: These are services related to the guest's accommodation:
+//
+//            24/7 Room Service: Providing food and beverages in the room around the clock.
+//    Laundry Service: Laundry, ironing, and clothes cleaning services for guests.
+//    Tour and Ticket Services: Assisting guests in booking local tours and attractions.
     private boolean isChargeable;
-    private Date requestTime;
+    private LocalDateTime requestTime;
+
+    public RoomService(boolean isChargeable, LocalDateTime requestTime) {
+        this.isChargeable = isChargeable;
+        this.requestTime = requestTime;
+    }
 
     public boolean isChargeable() {
         return isChargeable;
@@ -49,17 +76,26 @@ class RoomService extends Service {
         isChargeable = chargeable;
     }
 
-    public Date getRequestTime() {
+    public LocalDateTime getRequestTime() {
         return requestTime;
     }
 
-    public void setRequestTime(Date requestTime) {
-        this.requestTime = requestTime;
+    public void setRequestTime(LocalTime requestTime) {
+        this.requestTime = LocalDateTime.from(requestTime);
     }
 }
 
 class KitchenService extends Service {
+//    Kitchen Service: This likely pertains to culinary services within the hotel:
+//
+//    Food Services: Offering dishes and beverages from the hotel restaurant or through room service.
+//    Breakfast Services: Serving breakfast or brunch to guests.
+//    Conference and Event Catering: Providing catering services for conferences, seminars, weddings, and meetings.
     private String description;
+
+    public KitchenService(String description) {
+        this.description = description;
+    }
 
     public String getDescription() {
         return description;

@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 public interface Search {
-    public static List<Room> search(RoomStyle style, Date date, int duration){
-        return new ArrayList<>();
-    }
+    List<Room> search(RoomStyle style, Date date, int duration);
 }
 
 class Catalog implements Search {
