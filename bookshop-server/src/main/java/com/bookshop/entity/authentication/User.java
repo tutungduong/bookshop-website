@@ -1,6 +1,10 @@
 package com.bookshop.entity.authentication;
 
 import com.bookshop.entity.BaseEntity;
+import com.bookshop.entity.cart.Cart;
+import com.bookshop.entity.cart.CartItem;
+import com.bookshop.entity.general.Wishlist;
+import com.bookshop.entity.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +14,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,4 +37,17 @@ public class User extends BaseEntity {
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CartItem> carts = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Wishlist> orders = new ArrayList<>();
 }
