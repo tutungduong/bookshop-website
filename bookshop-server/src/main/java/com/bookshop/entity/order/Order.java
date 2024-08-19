@@ -3,6 +3,7 @@ package com.bookshop.entity.order;
 
 import com.bookshop.entity.BaseEntity;
 import com.bookshop.entity.authentication.User;
+import com.bookshop.entity.cashbook.PaymentMethodType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
