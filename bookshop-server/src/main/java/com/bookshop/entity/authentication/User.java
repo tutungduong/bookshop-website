@@ -1,30 +1,35 @@
 package com.bookshop.entity.authentication;
 
 import com.bookshop.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @Accessors(chain = true)
 @Entity
+// Don't can use name table user because it's a keyword in SQL
 @Table(name = "users")
 public class User extends BaseEntity {
+
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-    private String phone;
-    private String address;
-    private String avatar;
+
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;
-    private Integer role;
-    private String fullName;
-    private
 }
