@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,11 +21,16 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Entity
 @Table(name = "cart")
+
 public class Cart extends BaseEntity {
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private Set<CartVariant> cartVariants = new HashSet<>();
 
     // 2 trạng thái: (1) Normal, (2) Complete
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")

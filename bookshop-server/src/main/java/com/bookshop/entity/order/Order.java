@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 @AllArgsConstructor
 @Getter
 @Setter
@@ -20,14 +24,32 @@ import lombok.experimental.Accessors;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
 
+    @Column(name = "to_name", nullable = false)
+    private String toName;
+
+    @Column(name = "to_phone", nullable = false)
+    private String toPhone;
+
+    @Column(name = "to_address", nullable = false)
+    private String toAddress;
+
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;
 
+    @Column(name = "total_amount", nullable = false, columnDefinition = "DECIMAL(15,5)")
+    private BigDecimal totalAmount;
+
+    @Column(name = "total_pay", nullable = false, columnDefinition = "DECIMAL(15,5)")
+    private BigDecimal totalPay;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private Set<OrderVariant> orderVariants = new HashSet<>();
 
     @Column(name = "payment_method_type", nullable = false)
     @Enumerated(EnumType.STRING)
