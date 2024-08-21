@@ -51,4 +51,10 @@ public class User extends BaseEntity {
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;
+
+    @OneToOne(mappedBy = "user")
+    private Verification verification;
+
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
 }

@@ -1,5 +1,7 @@
 package com.bookshop.service.authentication;
 
+import com.bookshop.dto.authentication.RegistrationRequest;
+import com.bookshop.dto.authentication.ResetPasswordRequest;
 import com.bookshop.dto.authentication.UserRequest;
 
 public interface VerificationService {
@@ -7,11 +9,11 @@ public interface VerificationService {
 
     void resendRegistrationToken(Long userId);
 
-//    void confirmRegistration(RegistrationRequest registration);
+    void confirmRegistration(RegistrationRequest registration);
 
     void changeRegistrationEmail(Long userId, String emailUpdate);
 
     void forgetPassword(String email);
 
-//    void resetPassword(ResetPasswordRequest resetPasswordRequest);
+    void resetPassword(ResetPasswordRequest resetPasswordRequest);
 }
