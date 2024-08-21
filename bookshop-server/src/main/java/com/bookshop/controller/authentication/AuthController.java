@@ -19,8 +19,8 @@ import java.time.Instant;
 @AllArgsConstructor
 public class AuthController {
 
-    private VerificationService verificationService;
-    private UserRepository userRepository;
+    private final VerificationService verificationService;
+    private final UserRepository userRepository;
 
     // Login Account
     @PostMapping("/login")
