@@ -18,6 +18,6 @@ public class CartVariantKey implements Serializable {
     @Column(name = "cart_id", nullable = false)
     private Long cartId;
 
-   @Column(name = "variant_id", nullable = false)
+    @Column(name = "variant_id", nullable = false)
     private Long variantId;
 }

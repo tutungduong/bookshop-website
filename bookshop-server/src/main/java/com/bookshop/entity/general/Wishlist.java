@@ -12,21 +12,18 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "wishlist")
+@Table(name = "wishlist", uniqueConstraints = @UniqueConstraint(name = "uc_wish", columnNames = {"user_id", "product_id"}))
 public class Wishlist extends BaseEntity {
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonBackReference
     private Product product;
 }

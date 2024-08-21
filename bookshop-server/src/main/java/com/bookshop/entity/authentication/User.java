@@ -17,13 +17,14 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 
+// Reference:  https://stackoverflow.com/questions/39574907
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Accessors(chain = true)
 @Entity
-// Don't can use name table user because it's a keyword in SQL
 @Table(name = "users")
 public class User extends BaseEntity {
 
@@ -36,9 +37,6 @@ public class User extends BaseEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
-    private Integer status;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Cart> carts = new ArrayList<>();
@@ -50,4 +48,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Wishlist> wishlists = new ArrayList<>();
+
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
+    private Integer status;
 }

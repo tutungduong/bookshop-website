@@ -36,21 +36,8 @@ public class Variant extends BaseEntity {
     @Column(name = "discount", nullable = false)
     private Double discount;
 
-    @Column(name = "author", nullable = false)
-    private String author;
-
-    @Column(name = "publisher", nullable = false)
-    private String publisher;
-
-    @Column(name = "published_year", nullable = false)
-    private Integer publishedYear;
-
-    @Column(name = "pages", nullable = false)
-    private Integer pages;
-
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
-//    private List<Image> images = new ArrayList<>();
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
+    private Integer status;
 
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL)
     private Set<OrderVariant> orderVariants = new HashSet<>();

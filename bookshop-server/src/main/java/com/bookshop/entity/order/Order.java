@@ -30,20 +30,23 @@ public class Order extends BaseEntity {
     @JsonBackReference
     private User user;
 
-    @Column(name = "to_name", nullable = false)
-    private String toName;
-
-    @Column(name = "to_phone", nullable = false)
-    private String toPhone;
-
-    @Column(name = "to_address", nullable = false)
-    private String toAddress;
+//    @Column(name = "to_name", nullable = false)
+//    private String toName;
+//
+//    @Column(name = "to_phone", nullable = false)
+//    private String toPhone;
+//
+//    @Column(name = "to_address", nullable = false)
+//    private String toAddress;
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;
 
     @Column(name = "total_amount", nullable = false, columnDefinition = "DECIMAL(15,5)")
     private BigDecimal totalAmount;
+
+    @Column(name = "tax", nullable = false, columnDefinition = "DECIMAL(15,5)")
+    private BigDecimal tax;
 
     @Column(name = "total_pay", nullable = false, columnDefinition = "DECIMAL(15,5)")
     private BigDecimal totalPay;

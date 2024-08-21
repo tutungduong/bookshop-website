@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Embeddable
 public class OrderVariantKey implements Serializable {
     @Column(name = "order_id", nullable = false)
-    Long orderId;
+    private Long orderId;
 
     @Column(name = "variant_id", nullable = false)
     private Long variantId;
