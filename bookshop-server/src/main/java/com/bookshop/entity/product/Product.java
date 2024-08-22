@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "CategoryRepository")
+@Table(name = "product")
 public class Product extends BaseEntity {
 
     @Column(name = "name", nullable = false)
