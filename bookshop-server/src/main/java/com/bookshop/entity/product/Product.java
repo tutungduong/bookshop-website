@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Entity
-@Table(name = "product")
+@Table(name = "CategoryRepository")
 public class Product extends BaseEntity {
 
     @Column(name = "name", nullable = false)
@@ -51,7 +51,7 @@ public class Product extends BaseEntity {
     @JsonBackReference
     private Category category;
 
-    //    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    //    @OneToMany(mappedBy = "CategoryRepository", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JsonManagedReference
 //    private List<Image> images = new ArrayList<>();
 
