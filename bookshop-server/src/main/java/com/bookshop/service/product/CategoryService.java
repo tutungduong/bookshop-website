@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CategoryService implements CrudService<Long, CategoryRequest, CategoryResponse> {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
    @Override
     public List<CategoryResponse> findAll() {
@@ -63,6 +63,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());
         response.setCreatedAt(category.getCreatedAt());
+        response.setUpdatedAt(category.getUpdatedAt());
         response.setName(category.getName());
         response.setDescription(category.getDescription());
         response.setStatus(category.getStatus());
@@ -81,7 +82,6 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         category.setName(request.getName());
         category.setDescription(request.getDescription());
         category.setStatus(request.getStatus());
-        category.setUpdatedAt(Instant.now());
         return category;
     }
 }
