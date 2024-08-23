@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class CategoryRequest {
     private String name;
-    @Nullable
     private String description;
+//    private String thumbnail;
     private Integer status;
 }

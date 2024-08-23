@@ -3,14 +3,18 @@ package com.bookshop.service.product;
 
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
+import com.bookshop.dto.product.VariantRequest;
 import com.bookshop.entity.product.Category;
 import com.bookshop.entity.product.Product;
+import com.bookshop.entity.product.Variant;
 import com.bookshop.repository.product.CategoryRepository;
 import com.bookshop.repository.product.ProductRepository;
+import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+//    private final VariantRepository variantRepository;
 
     @Override
     public List<ProductResponse> findAll() {
@@ -62,6 +67,35 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         productRepository.deleteAllById(ids);
     }
 
+     private Product mapToEntity(ProductRequest request) {
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setAuthor(request.getAuthor());
+        product.setPublisher(request.getPublisher());
+        product.setPublishedYear(request.getPublishedYear());
+        product.setPages(request.getPages());
+        product.setStatus(request.getStatus());
+        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null));
+        return product;
+    }
+
+
+    private Product partialUpdate(Product product, ProductRequest request) {
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setAuthor(request.getAuthor());
+        product.setPublisher(request.getPublisher());
+        product.setPublishedYear(request.getPublishedYear());
+        product.setPages(request.getPages());
+        product.setStatus(request.getStatus());
+        product.setCategory(
+                            categoryRepository.findById(request.getCategoryId())
+                            .orElseThrow(() -> new RuntimeException("Category not found")));
+        product.setUpdatedAt(Instant.now());
+        return product;
+    }
+
     private ProductResponse mapToResponse(Product product) {
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
@@ -78,43 +112,27 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         return response;
     }
 
-    private Product mapToEntity(ProductRequest request) {
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setAuthor(request.getAuthor());
-        product.setPublisher(request.getPublisher());
-        product.setPublishedYear(request.getPublishedYear());
-        product.setPages(request.getPages());
-        product.setStatus(request.getStatus());
-        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null)
-    );
-        return product;
+    private ProductResponse.CategoryResponse mapToCategoryResponse(Category category){
+    if (category == null) {
+        return null;
+    }
+    ProductResponse.CategoryResponse response = new ProductResponse.CategoryResponse();
+    response.setId(category.getId());
+    response.setCreatedAt(category.getCreatedAt());
+    response.setUpdatedAt(category.getUpdatedAt());
+    response.setName(category.getName());
+    response.setDescription(category.getDescription());
+    response.setStatus(category.getStatus());
+    return response;
     }
 
-    private Product partialUpdate(Product product, ProductRequest request) {
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setAuthor(request.getAuthor());
-        product.setPublisher(request.getPublisher());
-        product.setPublishedYear(request.getPublishedYear());
-        product.setPages(request.getPages());
-        product.setStatus(request.getStatus());
-        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null));
-        return product;
-    }
+//    private Variant mapToVariant(VariantRequest request) {
+//        Variant variant = new Variant();
+//        variant.setPrice(request.getPrice());
+//        variant.setDiscount(request.getDiscount());
+//        variant.setStatus(request.getStatus());
+//        return variant;
+//    }
 
-    private ProductResponse.CategoryResponse mapToCategoryResponse(Category category) {
-        if (category == null) {
-            return null;
-        }
-        ProductResponse.CategoryResponse response = new ProductResponse.CategoryResponse();
-        response.setId(category.getId());
-        response.setName(category.getName());
-        response.setDescription(category.getDescription());
-        response.setStatus(category.getStatus());
-        response.setCreatedAt(category.getCreatedAt());
-        response.setUpdatedAt(category.getUpdatedAt());
-        return response;
-    }
+
 }

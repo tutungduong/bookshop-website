@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class ProductResponse {
@@ -18,11 +19,14 @@ public class ProductResponse {
     private String author;
     @Nullable
     private String publisher;
+    @Nullable
     private Integer publishedYear;
+    @Nullable
     private Integer pages;
     private Integer status;
     @Nullable
     private ProductResponse.CategoryResponse category;
+//     private List<ProductResponse.VariantResponse> variants;
 
     @Data
     public static class CategoryResponse {
@@ -32,6 +36,18 @@ public class ProductResponse {
         private String name;
         @Nullable
         private String description;
+//        @Nullable
+//        private String thumbnail;
+        private Integer status;
+    }
+
+    @Data
+    public static class VariantResponse{
+        private Long id;
+        private Instant createdAt;
+        private Instant updatedAt;
+        private Double price;
+        private Double discount;
         private Integer status;
     }
 

@@ -59,6 +59,14 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         categoryRepository.deleteAllById(ids);
     }
 
+    private Category mapToEntity(CategoryRequest request) {
+        Category category = new Category();
+        category.setName(request.getName());
+        category.setDescription(request.getDescription());
+        category.setStatus(request.getStatus());
+        return category;
+    }
+
     private CategoryResponse mapToResponse(Category category) {
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());
@@ -70,18 +78,11 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         return response;
     }
 
-    private Category mapToEntity(CategoryRequest request) {
-        Category category = new Category();
-        category.setName(request.getName());
-        category.setDescription(request.getDescription());
-        category.setStatus(request.getStatus());
-        return category;
-    }
-
     private Category partialUpdate(Category category, CategoryRequest request) {
         category.setName(request.getName());
         category.setDescription(request.getDescription());
         category.setStatus(request.getStatus());
+        category.setUpdatedAt(Instant.now());
         return category;
     }
 }

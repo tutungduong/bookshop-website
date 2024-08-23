@@ -2,6 +2,7 @@ package com.bookshop.entity.product;
 
 import com.bookshop.entity.BaseEntity;
 import com.bookshop.entity.cart.CartVariant;
+import com.bookshop.entity.general.Wishlist;
 import com.bookshop.entity.order.OrderVariant;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -17,9 +18,9 @@ import java.util.List;
 
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "product")
@@ -58,6 +59,9 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Variant> variants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product")
+    private List<Wishlist> wishes = new ArrayList<>();
 
 
 }

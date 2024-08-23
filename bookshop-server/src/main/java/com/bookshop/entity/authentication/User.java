@@ -47,7 +47,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Wishlist> wishlists = new ArrayList<>();
+    private List<Wishlist> wishes = new ArrayList<>();
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;

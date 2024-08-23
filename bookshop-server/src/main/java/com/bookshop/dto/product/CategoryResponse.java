@@ -12,7 +12,7 @@ public class CategoryResponse {
     private Instant createdAt;
     private Instant updatedAt;
     private String name;
-    @Nullable
+    private String thumbnail;
     private String description;
     private Integer status;
 }
