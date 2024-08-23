@@ -26,7 +26,7 @@ public class ProductResponse {
     private Integer status;
     @Nullable
     private ProductResponse.CategoryResponse category;
-//     private List<ProductResponse.VariantResponse> variants;
+    private List<ProductResponse.VariantResponse> variants;
 
     @Data
     public static class CategoryResponse {

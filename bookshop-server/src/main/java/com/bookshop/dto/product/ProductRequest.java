@@ -21,5 +21,5 @@ public class ProductRequest {
     @Nullable
     private Long categoryId;
     private Integer status;
-//    private List<VariantRequest> variants;
+    private List<VariantRequest> variants;
 }

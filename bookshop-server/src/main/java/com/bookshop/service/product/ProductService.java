@@ -24,7 +24,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-//    private final VariantRepository variantRepository;
+    private final VariantRepository variantRepository;
 
     @Override
     public List<ProductResponse> findAll() {
@@ -77,6 +77,9 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         product.setPages(request.getPages());
         product.setStatus(request.getStatus());
         product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null));
+       product.setVariants(request.getVariants().stream()
+            .map(variantRequest -> mapToVariant(variantRequest, product))
+            .collect(Collectors.toList()));
         return product;
     }
 
@@ -109,6 +112,9 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         response.setPages(product.getPages());
         response.setStatus(product.getStatus());
         response.setCategory(mapToCategoryResponse(product.getCategory()));
+        response.setVariants(product.getVariants().stream()
+                .map(this::mapToVariantResponse)
+                .collect(Collectors.toList()));
         return response;
     }
 
@@ -126,13 +132,24 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
     return response;
     }
 
-//    private Variant mapToVariant(VariantRequest request) {
-//        Variant variant = new Variant();
-//        variant.setPrice(request.getPrice());
-//        variant.setDiscount(request.getDiscount());
-//        variant.setStatus(request.getStatus());
-//        return variant;
-//    }
+    private Variant mapToVariant(VariantRequest request,Product product) {
+        Variant variant = new Variant();
+        variant.setProduct(product);
+        variant.setPrice(request.getPrice());
+        variant.setDiscount(request.getDiscount());
+        variant.setStatus(request.getStatus());
+        return variant;
+    }
+    private ProductResponse.VariantResponse mapToVariantResponse(Variant variant) {
+        ProductResponse.VariantResponse response = new ProductResponse.VariantResponse();
+        response.setId(variant.getId());
+        response.setCreatedAt(variant.getCreatedAt());
+        response.setUpdatedAt(variant.getUpdatedAt());
+        response.setPrice(variant.getPrice());
+        response.setDiscount(variant.getDiscount());
+        response.setStatus(variant.getStatus());
+        return response;
+    }
 
 
 }
