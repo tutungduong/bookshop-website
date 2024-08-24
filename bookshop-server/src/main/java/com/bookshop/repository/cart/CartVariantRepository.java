@@ -10,8 +10,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CartVariantRepository extends JpaRepository<CartVariant, CartVariantKey>, JpaSpecificationExecutor<CartVariant> {
-
-
-    Optional<Variant> findById(Long variantId);
-}
+public interface CartVariantRepository extends JpaRepository<CartVariant, CartVariantKey>,
+        JpaSpecificationExecutor<CartVariant> {}
