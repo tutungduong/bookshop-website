@@ -21,7 +21,6 @@ import java.util.Set;
 @Accessors(chain = true)
 @Entity
 @Table(name = "cart")
-
 public class Cart extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
