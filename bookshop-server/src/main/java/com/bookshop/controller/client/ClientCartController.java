@@ -30,8 +30,8 @@ public class ClientCartController {
     private ClientCartServiceImpl clientCartService;
 
     @GetMapping
-    public ResponseEntity<ClientCartResponse> getCart(@RequestParam String username){
-        return ResponseEntity.status(HttpStatus.OK).body((ClientCartResponse) clientCartService.get(username));
+    public ResponseEntity<List<ClientCartResponse>> getCart(@RequestParam Long userId){
+         return ResponseEntity.status(HttpStatus.OK).body(clientCartService.get(userId));
     }
 
     @PostMapping

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ClientCartService {
 
-     List<ClientCartResponse> get(String username);
+     List<ClientCartResponse> get(Long userId);
      ClientCartResponse save (ClientCartRequest request);
      void delete(List<ClientCartVariantKeyRequest> ids);
 }

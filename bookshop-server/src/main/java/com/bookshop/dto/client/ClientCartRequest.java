@@ -9,7 +9,7 @@ import java.util.Set;
 public class ClientCartRequest {
     @Nullable
     private Long cartId;
-    private String username;
+    private Long userId;
     private Set<ClientCartVariantRequest> cartItems;
     private Integer status;
     private UpdateQuantityType updateQuantityType;

@@ -29,9 +29,15 @@ public class ClientCartServiceImpl implements ClientCartService {
     private final CartVariantRepository cartVariantRepository;
     private final VariantRepository variantRepository;
     private final UserRepository userRepository;
+
+
     @Override
-    public List<ClientCartResponse> get(String username) {
-        return cartRepository.findByUsername(username).stream()
+    public List<ClientCartResponse> get(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return cartRepository.findByUsername(user.getUsername()).stream()
                 .map(this::entityToResponse)
                 .collect(Collectors.toList());
     }
@@ -64,46 +70,38 @@ public class ClientCartServiceImpl implements ClientCartService {
 private Cart responseToEntity(ClientCartRequest request) {
     Cart cart = new Cart();
 
-    // Set the user from the repository
-    cart.setUser(userRepository.findByUsername(request.getUsername())
+    cart.setUser(userRepository.findById(request.getUserId())
             .orElseThrow(() -> new RuntimeException("User not found")));
 
-    // Map each ClientCartVariantRequest to a CartVariant
     Set<CartVariant> cartVariants = request.getCartItems().stream()
         .map(clientCartVariantRequest -> {
             CartVariant cartVariant = new CartVariant();
             cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
 
-            // Find the variant and set it to cartVariant
             Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
                 .orElseThrow(() -> new RuntimeException("Variant not found with ID: "
                      + clientCartVariantRequest.getVariantId()));
             cartVariant.setVariant(variant);
 
-            // Set the cart to the cartVariant
             cartVariant.setCart(cart);
 
             return cartVariant;
         })
         .collect(Collectors.toSet());
 
-    // Set the cartVariants to the cart
     cart.setCartVariants(cartVariants);
-
-    // Set the status
     cart.setStatus(request.getStatus());
 
     return cart;
 }
 
   private Cart partialUpdate(Cart cart, ClientCartRequest request) {
-    // Update username if provided
-    if (request.getUsername() != null) {
-        cart.setUser(userRepository.findByUsername(request.getUsername())
+
+    if (request.getUserId() != null) {
+        cart.setUser(userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found")));
     }
 
-    // Update cartVariants if provided
     if (request.getCartItems() != null && !request.getCartItems().isEmpty()) {
         Set<CartVariant> cartVariants = request.getCartItems().stream()
             .map(clientCartVariantRequest -> {
@@ -125,11 +123,7 @@ private Cart responseToEntity(ClientCartRequest request) {
 
         cart.setCartVariants(cartVariants);
     }
-
-    // Update status if provided
-    if (request.getStatus() != null) {
-        cart.setStatus(request.getStatus());
-    }
+    cart.setStatus(request.getStatus());
 
     return cart;
 }
