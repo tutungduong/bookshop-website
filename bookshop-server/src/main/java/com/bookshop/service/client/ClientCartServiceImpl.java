@@ -33,9 +33,8 @@ public class ClientCartServiceImpl implements ClientCartService {
 
     @Override
     public List<ClientCartResponse> get(Long userId) {
-
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
         return cartRepository.findByUsername(user.getUsername()).stream()
                 .map(this::entityToResponse)

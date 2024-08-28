@@ -3,7 +3,6 @@ package com.bookshop.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 

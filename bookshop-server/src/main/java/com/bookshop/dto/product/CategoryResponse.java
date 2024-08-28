@@ -1,7 +1,6 @@
 package com.bookshop.dto.product;
 
 
-import jakarta.annotation.Nullable;
 import lombok.Data;
 
 import java.time.Instant;

@@ -1,8 +1,6 @@
 package com.bookshop.dto.product;
 
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 @Data
