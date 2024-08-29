@@ -20,6 +20,8 @@ public class ClientCartController {
 
     private ClientCartServiceImpl clientCartService;
 
+    // Bug don't show result when get cart ResponseEntity but it's working fine
+
     @GetMapping
     public ResponseEntity<List<ClientCartResponse>> getCart(@RequestParam Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(clientCartService.get(userId));
