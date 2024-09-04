@@ -1,9 +1,7 @@
 package com.bookshop.entity.product;
 
 import com.bookshop.entity.BaseEntity;
-import com.bookshop.entity.cart.CartVariant;
-import com.bookshop.entity.general.Wishlist;
-import com.bookshop.entity.order.OrderVariant;
+import com.bookshop.entity.general.Wish;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -61,7 +59,7 @@ public class Product extends BaseEntity {
     private List<Variant> variants = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
-    private List<Wishlist> wishes = new ArrayList<>();
+    private List<Wish> wishes = new ArrayList<>();
 
 
 }

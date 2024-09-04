@@ -25,6 +25,9 @@ import java.util.Set;
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
