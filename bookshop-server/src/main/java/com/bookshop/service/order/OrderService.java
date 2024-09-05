@@ -15,5 +15,5 @@ public interface OrderService {
 
     List<ClientSimpleOrderResponse> get(Long userId);
 
-//    List<ClientOrderDetailResponse> get(String code);
+    ClientOrderDetailResponse get(String code);
 }

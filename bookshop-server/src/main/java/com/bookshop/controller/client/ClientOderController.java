@@ -29,10 +29,10 @@ public class ClientOderController {
          return ResponseEntity.status(HttpStatus.OK).body(orderService.get(userId));
     }
 
-//    @GetMapping("/code")
-//    public ResponseEntity<ClientOrderDetailResponse> getOrder(@PathVariable String code) {
-//        return ResponseEntity.status(HttpStatus.OK).body(orderService.get(code));
-//    }
+    @GetMapping("/code")
+    public ResponseEntity<ClientOrderDetailResponse> getOrder(@RequestParam String code) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.get(code));
+    }
 
    @PutMapping("/cancel/{code}")
     public ResponseEntity<ObjectNode> cancelOrder(@PathVariable String code) {
@@ -44,15 +44,5 @@ public class ClientOderController {
     public ResponseEntity<ClientConfirmedOrderResponse> createClientOrder(@RequestBody ClientSimpleOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createClientOrder(request));
     }
-
-//    @GetMapping(value = "/success")
-//    public RedirectView paymentSuccessAndCaptureTransaction() {
-//        return null;
-//    }
-//
-//    @GetMapping(value = "/cancel")
-//    public RedirectView  paymentCancel() {
-//        return null;
-//    }
 
 }

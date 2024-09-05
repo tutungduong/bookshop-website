@@ -127,6 +127,16 @@ public class OrderServiceImpl implements OrderService{
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public ClientOrderDetailResponse get(String code) {
+
+        Order order = orderRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        return entityToDetailResponse(order);
+
+    }
+
     private ClientSimpleOrderResponse entityToResponse(Order order) {
         ClientSimpleOrderResponse response = new ClientSimpleOrderResponse();
 
@@ -159,6 +169,44 @@ public class OrderServiceImpl implements OrderService{
                 })
                 .collect(Collectors.toSet());
         response.setOrderItems(clientOrderVariantResponses);
+        return response;
+    }
+
+    private ClientOrderDetailResponse entityToDetailResponse(Order order) {
+        ClientOrderDetailResponse response = new ClientOrderDetailResponse();
+
+        response.setOrderId(order.getId());
+        response.setOrderCreatedAt(order.getCreatedAt());
+        response.setOrderCode(order.getCode());
+        response.setOrderStatus(order.getStatus());
+        response.setOrderTotalAmount(order.getTotalAmount());
+        response.setOrderTax(order.getTax());
+        response.setOrderTotalPay(order.getTotalPay());
+        response.setOrderPaymentMethodType(order.getPaymentMethodType());
+
+        Set<ClientOrderVariantResponse> clientOrderVariantResponses = order.getOrderVariants().stream()
+                .map(orderVariant -> {
+                    ClientOrderVariantResponse clientOrderVariantResponse = new ClientOrderVariantResponse();
+
+                    clientOrderVariantResponse.setOrderItemPrice(orderVariant.getPrice());
+                    clientOrderVariantResponse.setOrderItemQuantity(orderVariant.getQuantity());
+                    clientOrderVariantResponse.setOrderItemAmount(orderVariant.getAmount());
+
+                    ClientOrderVariantResponse.ClientVariantResponse clientVariantResponse = new ClientOrderVariantResponse.ClientVariantResponse();
+                    clientVariantResponse.setVariantId(orderVariant.getVariant().getId());
+
+                    ClientOrderVariantResponse.ClientVariantResponse.ClientProductResponse clientProductResponse = new ClientOrderVariantResponse.ClientVariantResponse.ClientProductResponse();
+                    clientProductResponse.setProductId(orderVariant.getVariant().getProduct().getId());
+                    clientProductResponse.setProductName(orderVariant.getVariant().getProduct().getName());
+
+                    clientVariantResponse.setVariantProduct(clientProductResponse);
+                    clientOrderVariantResponse.setOrderItemVariant(clientVariantResponse);
+
+                    return clientOrderVariantResponse;
+                })
+                .collect(Collectors.toSet());
+        response.setOrderItems(clientOrderVariantResponses);
+
         return response;
     }
 }
