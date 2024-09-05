@@ -1,11 +1,9 @@
 package com.bookshop.service.order;
 
 
-import com.bookshop.dto.client.ClientConfirmedOrderResponse;
-import com.bookshop.dto.client.ClientSimpleOrderRequest;
+import com.bookshop.dto.client.*;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cart.Cart;
-import com.bookshop.entity.cart.CartVariant;
 import com.bookshop.entity.cashbook.PaymentMethodType;
 import com.bookshop.entity.order.Order;
 import com.bookshop.entity.order.OrderVariant;
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -114,5 +113,52 @@ public class OrderServiceImpl implements OrderService{
             cartRepository.save(cart);
 
             return response;
+    }
+
+    @Override
+    public List<ClientSimpleOrderResponse> get(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String username = user.getUsername();
+
+        return orderRepository.findByUsername(username).stream()
+                .map(this::entityToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private ClientSimpleOrderResponse entityToResponse(Order order) {
+        ClientSimpleOrderResponse response = new ClientSimpleOrderResponse();
+
+        response.setOrderId(order.getId());
+        response.setOrderCreatedAt(order.getCreatedAt());
+        response.setOrderCode(order.getCode());
+        response.setOrderStatus(order.getStatus());
+        response.setOrderTotalPay(order.getTotalPay());
+        response.setOrderPaymentStatus(order.getPaymentStatus());
+
+        Set<ClientOrderVariantResponse> clientOrderVariantResponses = order.getOrderVariants().stream()
+                .map(orderVariant -> {
+                    ClientOrderVariantResponse clientOrderVariantResponse = new ClientOrderVariantResponse();
+
+                    clientOrderVariantResponse.setOrderItemPrice(orderVariant.getPrice());
+                    clientOrderVariantResponse.setOrderItemQuantity(orderVariant.getQuantity());
+                    clientOrderVariantResponse.setOrderItemAmount(orderVariant.getAmount());
+
+                    ClientOrderVariantResponse.ClientVariantResponse clientVariantResponse = new ClientOrderVariantResponse.ClientVariantResponse();
+                    clientVariantResponse.setVariantId(orderVariant.getVariant().getId());
+
+                    ClientOrderVariantResponse.ClientVariantResponse.ClientProductResponse clientProductResponse = new ClientOrderVariantResponse.ClientVariantResponse.ClientProductResponse();
+                    clientProductResponse.setProductId(orderVariant.getVariant().getProduct().getId());
+                    clientProductResponse.setProductName(orderVariant.getVariant().getProduct().getName());
+
+                    clientVariantResponse.setVariantProduct(clientProductResponse);
+                    clientOrderVariantResponse.setOrderItemVariant(clientVariantResponse);
+
+                    return clientOrderVariantResponse;
+                })
+                .collect(Collectors.toSet());
+        response.setOrderItems(clientOrderVariantResponses);
+        return response;
     }
 }

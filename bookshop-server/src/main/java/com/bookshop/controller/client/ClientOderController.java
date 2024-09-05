@@ -2,7 +2,9 @@ package com.bookshop.controller.client;
 
 
 import com.bookshop.dto.client.ClientConfirmedOrderResponse;
+import com.bookshop.dto.client.ClientOrderDetailResponse;
 import com.bookshop.dto.client.ClientSimpleOrderRequest;
+import com.bookshop.dto.client.ClientSimpleOrderResponse;
 import com.bookshop.service.order.OrderServiceImpl;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,14 +25,14 @@ public class ClientOderController {
     private OrderServiceImpl orderService;
 
     @GetMapping
-    public ResponseEntity<List<ObjectNode>> getAllOrder() {
-        return null;
+    public ResponseEntity<List<ClientSimpleOrderResponse>> getAllOrder(@RequestParam Long userId) {
+         return ResponseEntity.status(HttpStatus.OK).body(orderService.get(userId));
     }
 
-    @GetMapping("/code")
-    public ResponseEntity<ObjectNode> getOrder() {
-        return null;
-    }
+//    @GetMapping("/code")
+//    public ResponseEntity<ClientOrderDetailResponse> getOrder(@PathVariable String code) {
+//        return ResponseEntity.status(HttpStatus.OK).body(orderService.get(code));
+//    }
 
    @PutMapping("/cancel/{code}")
     public ResponseEntity<ObjectNode> cancelOrder(@PathVariable String code) {
@@ -43,14 +45,14 @@ public class ClientOderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createClientOrder(request));
     }
 
-    @GetMapping(value = "/success")
-    public RedirectView paymentSuccessAndCaptureTransaction() {
-        return null;
-    }
-
-    @GetMapping(value = "/cancel")
-    public RedirectView  paymentCancel() {
-        return null;
-    }
+//    @GetMapping(value = "/success")
+//    public RedirectView paymentSuccessAndCaptureTransaction() {
+//        return null;
+//    }
+//
+//    @GetMapping(value = "/cancel")
+//    public RedirectView  paymentCancel() {
+//        return null;
+//    }
 
 }
