@@ -4,6 +4,7 @@ package com.bookshop.controller.client;
 import com.bookshop.dto.client.ClientConfirmedOrderResponse;
 import com.bookshop.dto.client.ClientSimpleOrderRequest;
 import com.bookshop.service.order.OrderServiceImpl;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,10 @@ public class ClientOderController {
         return null;
     }
 
-    @PutMapping("/cancel/{code}")
-    public ResponseEntity<ObjectNode> cancelOrder() {
-        return null;
+   @PutMapping("/cancel/{code}")
+    public ResponseEntity<ObjectNode> cancelOrder(@PathVariable String code) {
+        orderService.cancelOrder(code);
+        return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
     }
 
     @PostMapping

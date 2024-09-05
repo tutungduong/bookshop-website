@@ -31,7 +31,19 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public void cancelOrder(String code) {
+        Order order = orderRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
+        // Hủy đơn hàng khi status = 1 hoặc 2
+        if(order.getStatus() < 3){
+            order.setStatus(5); // Status 5 là trạng thái huỷ háng
+
+            orderRepository.save(order);
+        }
+         else {
+            throw new RuntimeException(String
+                    .format("Order with code %s is in delivery or has been cancelled. Please check again!", code));
+        }
     }
 
     @Override
