@@ -20,7 +20,7 @@ import java.time.Instant;
 public class AuthController {
 
     private final VerificationService verificationService;
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
 
     // Login Account
     @PostMapping("/login")

@@ -4,6 +4,7 @@ package com.bookshop.controller.client;
 import com.bookshop.dto.client.ClientCartRequest;
 import com.bookshop.dto.client.ClientCartResponse;
 import com.bookshop.dto.client.ClientCartVariantKeyRequest;
+import com.bookshop.service.client.ClientCartService;
 import com.bookshop.service.client.ClientCartServiceImpl;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ClientCartController {
 
-    private ClientCartServiceImpl clientCartService;
+    private final ClientCartService clientCartService;
 
     @GetMapping
     public ResponseEntity<List<ClientCartResponse>> getCart(@RequestParam Long userId) {

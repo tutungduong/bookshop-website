@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class OrderController {
 
-    private OrderService orderService;
+    private final OrderService orderService;
 
     @PutMapping("/cancel/{code}")
     public ResponseEntity<ObjectNode> cancelOrder(@PathVariable String code) {

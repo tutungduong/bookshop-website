@@ -5,6 +5,7 @@ import com.bookshop.dto.client.ClientConfirmedOrderResponse;
 import com.bookshop.dto.client.ClientOrderDetailResponse;
 import com.bookshop.dto.client.ClientSimpleOrderRequest;
 import com.bookshop.dto.client.ClientSimpleOrderResponse;
+import com.bookshop.service.order.OrderService;
 import com.bookshop.service.order.OrderServiceImpl;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class ClientOderController {
 
-    private OrderServiceImpl orderService;
+    private final OrderService orderService;
 
     @GetMapping
     public ResponseEntity<List<ClientSimpleOrderResponse>> getAllOrder(@RequestParam Long userId) {

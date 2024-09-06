@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @GetMapping("")
     public ResponseEntity<List<CategoryResponse>> getAllCategories() {

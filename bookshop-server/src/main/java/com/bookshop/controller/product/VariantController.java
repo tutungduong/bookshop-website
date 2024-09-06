@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class VariantController {
 
-    private VariantService variantService;
+    private final VariantService variantService;
 
     @GetMapping("")
     public ResponseEntity<List<VariantResponse>> getAllVariants(){
