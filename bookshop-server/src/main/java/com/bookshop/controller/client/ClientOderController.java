@@ -5,7 +5,7 @@ import com.bookshop.dto.client.ClientConfirmedOrderResponse;
 import com.bookshop.dto.client.ClientOrderDetailResponse;
 import com.bookshop.dto.client.ClientSimpleOrderRequest;
 import com.bookshop.dto.client.ClientSimpleOrderResponse;
-import com.bookshop.service.order.OrderService;
+import com.bookshop.service.order.ClientOrderService;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
@@ -21,27 +21,27 @@ import java.util.List;
 
 public class ClientOderController {
 
-    private final OrderService orderService;
+    private final ClientOrderService clientOrderService;
 
     @GetMapping
     public ResponseEntity<List<ClientSimpleOrderResponse>> getAllOrder(@RequestParam Long userId) {
-         return ResponseEntity.status(HttpStatus.OK).body(orderService.get(userId));
+         return ResponseEntity.status(HttpStatus.OK).body(clientOrderService.get(userId));
     }
 
     @GetMapping("/code")
     public ResponseEntity<ClientOrderDetailResponse> getOrder(@RequestParam String code) {
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.get(code));
+        return ResponseEntity.status(HttpStatus.OK).body(clientOrderService.get(code));
     }
 
    @PutMapping("/cancel/{code}")
     public ResponseEntity<ObjectNode> cancelOrder(@PathVariable String code) {
-        orderService.cancelOrder(code);
+        clientOrderService.cancelOrder(code);
         return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
     }
 
     @PostMapping
     public ResponseEntity<ClientConfirmedOrderResponse> createClientOrder(@RequestBody ClientSimpleOrderRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createClientOrder(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientOrderService.createClientOrder(request));
     }
 
 }
