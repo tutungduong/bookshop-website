@@ -32,11 +32,12 @@ public class OrderController {
     public ResponseEntity<OrderResponse> getOrder(@PathVariable("id") Long orderId){
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findById(orderId));
     }
-    // bug dont can request
-//    @PostMapping("")
-//    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request){
-//        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request));
-//    }
+
+    @PostMapping("")
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request){
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request));
+    }
+
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<OrderResponse> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderRequest request){

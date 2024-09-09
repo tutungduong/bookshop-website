@@ -41,14 +41,14 @@ public class Order extends BaseEntity {
 //
 //    @Column(name = "to_address", nullable = false)
 //    private String toAddress;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_cancellation_reason_id")
-    @JsonBackReference
-    private OrderCancellationReason orderCancellationReason;
-
-    @Column(name = "note")
-    private String note;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "order_cancellation_reason_id")
+//    @JsonBackReference
+//    private OrderCancellationReason orderCancellationReason;
+//
+//    @Column(name = "note")
+//    private String note;
 
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")

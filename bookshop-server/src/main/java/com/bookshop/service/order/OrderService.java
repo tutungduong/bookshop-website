@@ -6,11 +6,9 @@ import com.bookshop.dto.order.OrderVariantRequest;
 import com.bookshop.dto.order.OrderVariantResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.order.Order;
-import com.bookshop.entity.order.OrderCancellationReason;
 import com.bookshop.entity.order.OrderVariant;
 import com.bookshop.entity.product.Variant;
 import com.bookshop.repository.authentication.UserRepository;
-import com.bookshop.repository.order.OrderCancellationReasonRepository;
 import com.bookshop.repository.order.OrderRepository;
 import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
@@ -19,6 +17,8 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
 import com.bookshop.dto.authentication.UserResponse;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +29,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final OrderCancellationReasonRepository orderCancellationReasonRepository;
+//    private final OrderCancellationReasonRepository orderCancellationReasonRepository;
     private final VariantRepository variantRepository;
 
     @Override
@@ -77,38 +77,41 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        OrderCancellationReason orderCancellationReason = orderCancellationReasonRepository.findById(request.getOrderCancellationReasonId())
-                .orElse(null);
+        Variant variant = variantRepository.findById(request.getVariantId()).orElseThrow(null);
+
+//        OrderCancellationReason orderCancellationReason = orderCancellationReasonRepository.findById(request.getOrderCancellationReasonId())
+//                .orElse(null);
 
 
         Order order = new Order();
         order.setCode(RandomString.make(12).toUpperCase());
-        order.setStatus(request.getStatus());
-        order.setOrderCancellationReason(orderCancellationReason);
-        order.setNote(request.getNote());
         order.setUser(user);
+        order.setStatus(request.getStatus());
+//        order.setOrderCancellationReason(orderCancellationReason);
+//        order.setNote(request.getNote());
 
-        order.setTotalAmount(request.getTotalAmount());
-        order.setTax(request.getTax());
-        order.setTotalPay(request.getTotalPay());
         order.setPaymentMethodType(request.getPaymentMethodType());
         order.setPaymentStatus(request.getPaymentStatus());
 
-        Set<OrderVariant> orderVariants = request.getOrderVariants().stream()
-        .map(orderVariantRequest -> {
+        order.setOrderVariants(Set.of(new OrderVariant()
+                .setOrder(order)
+                .setVariant(variant)
+                .setPrice(BigDecimal.valueOf(variant.getPrice()))
+                .setQuantity(request.getQuantity())
+                .setAmount(BigDecimal.valueOf(variant.getPrice()).multiply(BigDecimal.valueOf(request.getQuantity())))
+        ));
 
-            Variant variant = variantRepository.findById(orderVariantRequest.getVariantId())
-                    .orElseThrow(() -> new RuntimeException("Variant not found"));
+        BigDecimal totalAmount = BigDecimal.valueOf(order.getOrderVariants().stream()
+                .mapToDouble(orderVariant -> orderVariant.getAmount().doubleValue())
+                .sum());
 
-            OrderVariant orderVariant = new OrderVariant();
-            orderVariant.setVariant(variant);
-            orderVariant.setPrice(orderVariantRequest.getPrice());
-            orderVariant.setQuantity(orderVariantRequest.getQuantity());
-            orderVariant.setAmount(orderVariantRequest.getAmount());
-            return orderVariant;
-        })
-        .collect(Collectors.toSet());
-        order.setOrderVariants(orderVariants);
+         BigDecimal tax = BigDecimal.valueOf(0.1);
+         BigDecimal totalPay = totalAmount
+                .add(totalAmount.multiply(tax).setScale(0, RoundingMode.HALF_UP));
+
+         order.setTotalAmount(totalAmount);
+         order.setTax(tax);
+         order.setTotalPay(totalPay);
 
         return order;
     }
@@ -116,11 +119,11 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
 
     private Order partialUpdate(Order order, OrderRequest request) {
         order.setStatus(request.getStatus());
-        order.setTotalAmount(request.getTotalAmount());
-        order.setTax(request.getTax());
-        order.setTotalPay(request.getTotalPay());
-        order.setPaymentStatus(request.getPaymentStatus());
-        order.setPaymentMethodType(request.getPaymentMethodType());
+//        order.setTotalAmount(request.getTotalAmount());
+//        order.setTax(request.getTax());
+//        order.setTotalPay(request.getTotalPay());
+//        order.setPaymentStatus(request.getPaymentStatus());
+//        order.setPaymentMethodType(request.getPaymentMethodType());
 
         return order;
     }
@@ -134,7 +137,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         response.setUpdatedAt(order.getUpdatedAt());
         response.setCode(order.getCode());
         response.setStatus(order.getStatus());
-        response.setNote(order.getNote());
+//        response.setNote(order.getNote());
 
         OrderResponse.UserResponse userResponse = new OrderResponse.UserResponse();
         userResponse.setId(order.getUser().getId());
