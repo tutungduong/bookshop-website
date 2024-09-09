@@ -38,11 +38,10 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request));
     }
 
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<OrderResponse> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderRequest request){
-//        return ResponseEntity.status(HttpStatus.OK).body(orderService.save(orderId, request));
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderResponse> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderRequest request){
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.save(orderId, request));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long orderId){

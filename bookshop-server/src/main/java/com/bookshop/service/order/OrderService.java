@@ -118,14 +118,36 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
 
 
     private Order partialUpdate(Order order, OrderRequest request) {
-        order.setStatus(request.getStatus());
-//        order.setTotalAmount(request.getTotalAmount());
-//        order.setTax(request.getTax());
-//        order.setTotalPay(request.getTotalPay());
-//        order.setPaymentStatus(request.getPaymentStatus());
-//        order.setPaymentMethodType(request.getPaymentMethodType());
+         User user = userRepository.findById(request.getUserId()).orElse(null);
+    Variant variant = variantRepository.findById(request.getVariantId()).orElse(null);
 
-        return order;
+    order.setStatus(request.getStatus());
+    order.setUser(user);
+
+    order.setOrderVariants(Set.of(new OrderVariant()
+                .setOrder(order)
+                .setVariant(variant)
+                .setPrice(BigDecimal.valueOf(variant.getPrice()))
+                .setQuantity(request.getQuantity())
+                .setAmount(BigDecimal.valueOf(variant.getPrice()).multiply(BigDecimal.valueOf(request.getQuantity())))
+    ));
+
+    order.setPaymentMethodType(request.getPaymentMethodType());
+    order.setPaymentStatus(request.getPaymentStatus());
+
+    BigDecimal totalAmount = BigDecimal.valueOf(order.getOrderVariants().stream()
+            .mapToDouble(orderVariant -> orderVariant.getAmount().doubleValue())
+            .sum());
+
+    BigDecimal tax = BigDecimal.valueOf(0.1);
+    BigDecimal totalPay = totalAmount
+            .add(totalAmount.multiply(tax).setScale(0, RoundingMode.HALF_UP));
+
+    order.setTotalAmount(totalAmount);
+    order.setTax(tax);
+    order.setTotalPay(totalPay);
+
+    return order;
     }
 
     private OrderResponse mapToResponse(Order order) {
