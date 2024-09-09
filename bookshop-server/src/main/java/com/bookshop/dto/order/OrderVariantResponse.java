@@ -19,21 +19,17 @@ public class OrderVariantResponse {
         private Instant createdAt;
         private Instant updatedAt;
         private OrderVariantResponse.VariantResponse.ProductResponse product;
-        private String sku;
-        private Double cost;
+        private Double discount;
         private Double price;
-
-        private JsonNode properties;
         private Integer status;
 
         @Data
         public static class ProductResponse {
             private Long id;
+            private String name;
+            private String author;
             private Instant createdAt;
             private Instant updatedAt;
-            private String name;
-            private String code;
-            private String slug;
         }
     }
 }

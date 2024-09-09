@@ -3,6 +3,7 @@ package com.bookshop.service.order;
 import com.bookshop.dto.order.OrderRequest;
 import com.bookshop.dto.order.OrderResponse;
 import com.bookshop.dto.order.OrderVariantRequest;
+import com.bookshop.dto.order.OrderVariantResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.order.Order;
 import com.bookshop.entity.order.OrderCancellationReason;
@@ -79,32 +80,36 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         OrderCancellationReason orderCancellationReason = orderCancellationReasonRepository.findById(request.getOrderCancellationReasonId())
                 .orElse(null);
 
+
         Order order = new Order();
         order.setCode(RandomString.make(12).toUpperCase());
         order.setStatus(request.getStatus());
+        order.setOrderCancellationReason(orderCancellationReason);
+        order.setNote(request.getNote());
         order.setUser(user);
+
         order.setTotalAmount(request.getTotalAmount());
         order.setTax(request.getTax());
         order.setTotalPay(request.getTotalPay());
         order.setPaymentMethodType(request.getPaymentMethodType());
         order.setPaymentStatus(request.getPaymentStatus());
 
-        order.setNote(request.getNote());
-        order.setOrderCancellationReason(orderCancellationReason);
-
         Set<OrderVariant> orderVariants = request.getOrderVariants().stream()
-                .map(orderVariantRequest -> {
-                    OrderVariant orderVariant = new OrderVariant();
-                    Variant variant = variantRepository.findById(orderVariantRequest.getVariantId())
-                            .orElseThrow(() -> new RuntimeException("Variant not found with ID: " + orderVariantRequest.getVariantId()));
-                    orderVariant.setVariant(variant);
-                    orderVariant.setPrice(orderVariantRequest.getPrice());
-                    orderVariant.setQuantity(orderVariantRequest.getQuantity());
-                    orderVariant.setAmount(orderVariantRequest.getAmount());
-                    return orderVariant;
-                })
-                .collect(Collectors.toSet());
+        .map(orderVariantRequest -> {
+
+            Variant variant = variantRepository.findById(orderVariantRequest.getVariantId())
+                    .orElseThrow(() -> new RuntimeException("Variant not found"));
+
+            OrderVariant orderVariant = new OrderVariant();
+            orderVariant.setVariant(variant);
+            orderVariant.setPrice(orderVariantRequest.getPrice());
+            orderVariant.setQuantity(orderVariantRequest.getQuantity());
+            orderVariant.setAmount(orderVariantRequest.getAmount());
+            return orderVariant;
+        })
+        .collect(Collectors.toSet());
         order.setOrderVariants(orderVariants);
+
         return order;
     }
 
@@ -115,21 +120,30 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         order.setTax(request.getTax());
         order.setTotalPay(request.getTotalPay());
         order.setPaymentStatus(request.getPaymentStatus());
-        order.setPaymentStatus(request.getPaymentStatus());
+        order.setPaymentMethodType(request.getPaymentMethodType());
 
         return order;
     }
 
     private OrderResponse mapToResponse(Order order) {
 
-        User user = order.getUser();
-
         OrderResponse response = new OrderResponse();
+
         response.setId(order.getId());
         response.setCreatedAt(order.getCreatedAt());
         response.setUpdatedAt(order.getUpdatedAt());
         response.setCode(order.getCode());
         response.setStatus(order.getStatus());
+        response.setNote(order.getNote());
+
+        OrderResponse.UserResponse userResponse = new OrderResponse.UserResponse();
+        userResponse.setId(order.getUser().getId());
+        userResponse.setCreatedAt(order.getUser().getCreatedAt());
+        userResponse.setUpdatedAt(order.getUser().getUpdatedAt());
+        userResponse.setUsername(order.getUser().getUsername());
+        userResponse.setGmail(order.getUser().getEmail());
+
+        response.setUser(userResponse);
 
         response.setTotalAmount(order.getTotalAmount());
         response.setTax(order.getTax());
@@ -137,15 +151,36 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         response.setPaymentMethodType(order.getPaymentMethodType());
         response.setPaymentStatus(order.getPaymentStatus());
 
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(user.getId());
-        userResponse.setCreatedAt(user.getCreatedAt());
-        userResponse.setUpdatedAt(user.getUpdatedAt());
-        userResponse.setUsername(user.getUsername());
-        userResponse.setPassword(user.getPassword());
-        userResponse.setGmail(user.getEmail());
-        response.setUser(userResponse);
+        Set<OrderVariantResponse> orderVariantRequests = order.getOrderVariants().stream()
+            .map(orderVariant -> {
+                OrderVariantResponse orderVariantResponse = new OrderVariantResponse();
+                orderVariantResponse.setPrice(orderVariant.getPrice());
+                orderVariantResponse.setQuantity(orderVariant.getQuantity());
+                orderVariantResponse.setAmount(orderVariant.getAmount());
 
+                OrderVariantResponse.VariantResponse variantResponse = new OrderVariantResponse.VariantResponse();
+                variantResponse.setId(orderVariant.getVariant().getId());
+                variantResponse.setCreatedAt(orderVariant.getVariant().getCreatedAt());
+                variantResponse.setUpdatedAt(orderVariant.getVariant().getUpdatedAt());
+                variantResponse.setDiscount(orderVariant.getVariant().getDiscount());
+                variantResponse.setPrice(orderVariant.getVariant().getPrice());
+                variantResponse.setStatus(orderVariant.getVariant().getStatus());
+
+                OrderVariantResponse.VariantResponse.ProductResponse productResponse = new OrderVariantResponse.VariantResponse.ProductResponse();
+                productResponse.setId(orderVariant.getVariant().getProduct().getId());
+                productResponse.setName(orderVariant.getVariant().getProduct().getName());
+                productResponse.setAuthor(orderVariant.getVariant().getProduct().getAuthor());
+                productResponse.setCreatedAt(orderVariant.getVariant().getProduct().getCreatedAt());
+                productResponse.setUpdatedAt(orderVariant.getVariant().getProduct().getUpdatedAt());
+
+                variantResponse.setProduct(productResponse);
+                orderVariantResponse.setVariant(variantResponse);
+
+                return orderVariantResponse;
+            })
+            .collect(Collectors.toSet());
+
+        response.setOrderVariants(orderVariantRequests);
         return response;
     }
 }

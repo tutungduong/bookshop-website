@@ -77,7 +77,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         product.setPages(request.getPages());
         product.setStatus(request.getStatus());
         product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null));
-       product.setVariants(request.getVariants().stream()
+        product.setVariants(request.getVariants().stream()
             .map(variantRequest -> mapToVariant(variantRequest, product))
             .collect(Collectors.toList()));
         return product;

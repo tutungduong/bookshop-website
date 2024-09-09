@@ -19,20 +19,24 @@ public class OrderResponse {
 //    private String toName;
 //    private String toPhone;
 //    private String toAddress;
-//    private String toWardName;
-//    private String toDistrictName;
-//    private String toProvinceName;
-//    private OrderResourceResponse orderResource;
 //    @Nullable
 //    private OrderCancellationReasonResponse orderCancellationReason;
-//    @Nullable
-//    private String note;
-    private UserResponse user;
-//    private Set<OrderVariantResponse> orderVariants;
+    @Nullable
+    private String note;
+    private OrderResponse.UserResponse user;
+    private Set<OrderVariantResponse> orderVariants;
     private BigDecimal totalAmount;
     private BigDecimal tax;
-//    private BigDecimal shippingCost;
     private BigDecimal totalPay;
     private PaymentMethodType paymentMethodType;
     private Integer paymentStatus;
+
+    @Data
+    public static class UserResponse{
+        private Long id;
+        private Instant createdAt;
+        private Instant updatedAt;
+        private String username;
+        private String gmail;
+    }
 }

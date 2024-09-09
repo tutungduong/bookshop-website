@@ -22,6 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
 
+
     @GetMapping("")
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findAll());
@@ -31,16 +32,16 @@ public class OrderController {
     public ResponseEntity<OrderResponse> getOrder(@PathVariable("id") Long orderId){
         return ResponseEntity.status(HttpStatus.OK).body(orderService.findById(orderId));
     }
-
-    @PostMapping("")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<OrderResponse> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderRequest request){
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.save(orderId, request));
-    }
+    // bug dont can request
+//    @PostMapping("")
+//    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request){
+//        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request));
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<OrderResponse> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderRequest request){
+//        return ResponseEntity.status(HttpStatus.OK).body(orderService.save(orderId, request));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long orderId){
