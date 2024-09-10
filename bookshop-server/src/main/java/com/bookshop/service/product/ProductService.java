@@ -1,6 +1,7 @@
 package com.bookshop.service.product;
 
 
+import com.bookshop.dto.product.CategoryResponse;
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
 import com.bookshop.dto.product.VariantRequest;
@@ -11,6 +12,7 @@ import com.bookshop.repository.product.CategoryRepository;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,6 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final VariantRepository variantRepository;
 
     @Override
     public List<ProductResponse> findAll() {
@@ -76,10 +77,22 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         product.setPublishedYear(request.getPublishedYear());
         product.setPages(request.getPages());
         product.setStatus(request.getStatus());
-        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElse(null));
+        // Update category only if categoryId from request is not null
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category with ID " + request.getCategoryId() + " not found"));
+            product.setCategory(category);
+        }
         product.setVariants(request.getVariants().stream()
-            .map(variantRequest -> mapToVariant(variantRequest, product))
-            .collect(Collectors.toList()));
+                .map(variantRequest -> {
+                    Variant variant = new Variant();
+                      variant.setProduct(product);
+                      variant.setPrice(variantRequest.getPrice());
+                      variant.setDiscount(variantRequest.getDiscount());
+                      variant.setStatus(variantRequest.getStatus());
+                      return variant;
+                })
+         .collect(Collectors.toList()));
         return product;
     }
 
@@ -92,9 +105,22 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         product.setPublishedYear(request.getPublishedYear());
         product.setPages(request.getPages());
         product.setStatus(request.getStatus());
-        product.setCategory(
-                            categoryRepository.findById(request.getCategoryId())
-                            .orElseThrow(() -> new RuntimeException("Category not found")));
+        // Update category only if categoryId from request is not null
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category with ID " + request.getCategoryId() + " not found"));
+            product.setCategory(category);
+        }
+        product.setVariants(request.getVariants().stream()
+                .map(variantRequest -> {
+                    Variant variant = new Variant();
+                    variant.setProduct(product);
+                    variant.setPrice(variantRequest.getPrice());
+                    variant.setDiscount(variantRequest.getDiscount());
+                    variant.setStatus(variantRequest.getStatus());
+                    return variant;
+                })
+                .collect(Collectors.toList()));
         product.setUpdatedAt(Instant.now());
         return product;
     }
@@ -111,45 +137,28 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         response.setPublishedYear(product.getPublishedYear());
         response.setPages(product.getPages());
         response.setStatus(product.getStatus());
-        response.setCategory(mapToCategoryResponse(product.getCategory()));
+
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setId(product.getCategory().getId());
+        categoryResponse.setName(product.getCategory().getName());
+        categoryResponse.setDescription(product.getCategory().getDescription());
+        categoryResponse.setCreatedAt(product.getCategory().getCreatedAt());
+        categoryResponse.setUpdatedAt(product.getCategory().getUpdatedAt());
+        categoryResponse.setStatus(product.getCategory().getStatus());
+        response.setCategory(categoryResponse);
+
         response.setVariants(product.getVariants().stream()
-                .map(this::mapToVariantResponse)
+                .map(variant -> {
+                    ProductResponse.VariantResponse variantResponse = new ProductResponse.VariantResponse();
+                    variantResponse.setId(variant.getId());
+                    variantResponse.setCreatedAt(variant.getCreatedAt());
+                    variantResponse.setUpdatedAt(variant.getUpdatedAt());
+                    variantResponse.setPrice(variant.getPrice());
+                    variantResponse.setDiscount(variant.getDiscount());
+                    variantResponse.setStatus(variant.getStatus());
+                    return variantResponse;
+                })
                 .collect(Collectors.toList()));
         return response;
     }
-
-    private ProductResponse.CategoryResponse mapToCategoryResponse(Category category){
-    if (category == null) {
-        return null;
-    }
-    ProductResponse.CategoryResponse response = new ProductResponse.CategoryResponse();
-    response.setId(category.getId());
-    response.setCreatedAt(category.getCreatedAt());
-    response.setUpdatedAt(category.getUpdatedAt());
-    response.setName(category.getName());
-    response.setDescription(category.getDescription());
-    response.setStatus(category.getStatus());
-    return response;
-    }
-
-    private Variant mapToVariant(VariantRequest request,Product product) {
-        Variant variant = new Variant();
-        variant.setProduct(product);
-        variant.setPrice(request.getPrice());
-        variant.setDiscount(request.getDiscount());
-        variant.setStatus(request.getStatus());
-        return variant;
-    }
-    private ProductResponse.VariantResponse mapToVariantResponse(Variant variant) {
-        ProductResponse.VariantResponse response = new ProductResponse.VariantResponse();
-        response.setId(variant.getId());
-        response.setCreatedAt(variant.getCreatedAt());
-        response.setUpdatedAt(variant.getUpdatedAt());
-        response.setPrice(variant.getPrice());
-        response.setDiscount(variant.getDiscount());
-        response.setStatus(variant.getStatus());
-        return response;
-    }
-
-
 }
