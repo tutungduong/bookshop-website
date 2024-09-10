@@ -3,11 +3,13 @@ package com.bookshop.service.product;
 
 import com.bookshop.dto.product.VariantRequest;
 import com.bookshop.dto.product.VariantResponse;
+import com.bookshop.entity.product.Category;
 import com.bookshop.entity.product.Product;
 import com.bookshop.entity.product.Variant;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +66,11 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
 
     private Variant mapToEntity(VariantRequest request) {
         Variant variant = new Variant();
-        variant.setProduct(productRepository.findById(request.getProductId()).orElse(null));
+        if (request.getProductId() != null) {
+            Product product = productRepository.findById(request.getProductId())
+                    .orElseThrow(() -> new EntityNotFoundException("Product with ID " + request.getProductId() + " not found"));
+            variant.setProduct(product);
+        }
         variant.setPrice(request.getPrice());
         variant.setDiscount(request.getDiscount());
         variant.setStatus(request.getStatus());
@@ -75,7 +81,11 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         variant.setPrice(request.getPrice());
         variant.setDiscount(request.getDiscount());
         variant.setStatus(request.getStatus());
-        variant.setProduct(productRepository.findById(request.getProductId()).orElse(null));
+        if (request.getProductId() != null) {
+            Product product = productRepository.findById(request.getProductId())
+                    .orElseThrow(() -> new EntityNotFoundException("Product with ID " + request.getProductId() + " not found"));
+            variant.setProduct(product);
+        }
         variant.setUpdatedAt(Instant.now());
         return variant;
     }
@@ -88,17 +98,16 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         response.setPrice(Variant.getPrice());
         response.setDiscount(Variant.getDiscount());
         response.setStatus(Variant.getStatus());
-        response.setProduct(mapToProductResponse(Variant));
+
+        VariantResponse.ProductResponse productResponse = new VariantResponse.ProductResponse();
+        productResponse.setId(Variant.getProduct().getId());
+        productResponse.setName(Variant.getProduct().getName());
+        productResponse.setAuthor(Variant.getProduct().getAuthor());
+        productResponse.setCreatedAt(Variant.getProduct().getCreatedAt());
+        productResponse.setUpdatedAt(Variant.getProduct().getUpdatedAt());
+
+        response.setProduct(productResponse);
         return response;
     }
 
-    private VariantResponse.ProductResponse mapToProductResponse(Variant variant) {
-        VariantResponse.ProductResponse productResponse = new VariantResponse.ProductResponse();
-        productResponse.setId(variant.getProduct().getId());
-        productResponse.setCreatedAt(variant.getProduct().getCreatedAt());
-        productResponse.setUpdatedAt(variant.getProduct().getUpdatedAt());
-        productResponse.setName(variant.getProduct().getName());
-        productResponse.setAuthor(variant.getProduct().getAuthor());
-        return productResponse;
-    }
 }
