@@ -9,6 +9,7 @@ import com.bookshop.service.CrudService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,7 @@ public class OrderCancellationReasonService implements CrudService<Long, OrderCa
         orderCancellationReason.setStatus(request.getStatus());
         orderCancellationReason.setNote(request.getNote());
         orderCancellationReason.setName(request.getName());
+        orderCancellationReason.setUpdatedAt(Instant.now());
         return orderCancellationReason;
     }
 
@@ -79,6 +81,8 @@ public class OrderCancellationReasonService implements CrudService<Long, OrderCa
         response.setName(orderCancellationReason.getName());
         response.setNote(orderCancellationReason.getNote());
         response.setStatus(orderCancellationReason.getStatus());
+        response.setCreatedAt(orderCancellationReason.getCreatedAt());
+        response.setUpdatedAt(orderCancellationReason.getUpdatedAt());
         return response;
     }
 }
