@@ -63,7 +63,17 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         Category category = new Category();
         category.setName(request.getName());
         category.setDescription(request.getDescription());
+        category.setThumbnail(request.getThumbnail());
         category.setStatus(request.getStatus());
+        return category;
+    }
+
+    private Category partialUpdate(Category category, CategoryRequest request) {
+        category.setName(request.getName());
+        category.setDescription(request.getDescription());
+        category.setThumbnail(request.getThumbnail());
+        category.setStatus(request.getStatus());
+        category.setUpdatedAt(Instant.now());
         return category;
     }
 
@@ -75,14 +85,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         response.setName(category.getName());
         response.setDescription(category.getDescription());
         response.setStatus(category.getStatus());
+        response.setThumbnail(category.getThumbnail());
         return response;
-    }
-
-    private Category partialUpdate(Category category, CategoryRequest request) {
-        category.setName(request.getName());
-        category.setDescription(request.getDescription());
-        category.setStatus(request.getStatus());
-        category.setUpdatedAt(Instant.now());
-        return category;
     }
 }

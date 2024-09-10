@@ -7,6 +7,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends netcat \
     && apt-get clean \
     && apt-get install -y locales \
+    && locale-gen C.UTF-8
+
+## Set the environment for UTF-8 locale
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
 # Set the working directory inside the container
 WORKDIR /app
 

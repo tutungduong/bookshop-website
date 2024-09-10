@@ -27,10 +27,10 @@ public class Category extends BaseEntity {
     @Column(name = "thumbnail")
     private String thumbnail;
 
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
+    private Integer status;
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Product> products = new ArrayList<>();
-
-    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
-    private Integer status;
 }

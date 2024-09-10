@@ -10,8 +10,6 @@ import java.util.List;
 @Data
 public class ProductResponse {
     private Long id;
-    private Instant createdAt;
-    private Instant updatedAt;
     private String name;
     @Nullable
     private String description;
@@ -27,17 +25,19 @@ public class ProductResponse {
     @Nullable
     private ProductResponse.CategoryResponse category;
     private List<ProductResponse.VariantResponse> variants;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @Data
     public static class CategoryResponse {
         private Long id;
-        private Instant createdAt;
-        private Instant updatedAt;
         private String name;
         @Nullable
         private String description;
 //        @Nullable
 //        private String thumbnail;
+        private Instant createdAt;
+        private Instant updatedAt;
         private Integer status;
     }
 
