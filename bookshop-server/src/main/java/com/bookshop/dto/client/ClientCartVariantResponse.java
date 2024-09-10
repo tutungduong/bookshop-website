@@ -18,6 +18,7 @@ public class ClientCartVariantResponse {
         public static class ClientProductResponse {
             private Long productId;
             private String productName;
+            private String Author;
 //            private String productThumbnail;
         }
     }

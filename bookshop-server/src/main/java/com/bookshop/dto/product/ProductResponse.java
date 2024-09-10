@@ -23,11 +23,21 @@ public class ProductResponse {
     private Integer pages;
     private Integer status;
     @Nullable
-    private CategoryResponse category;
+    private ProductResponse.CategoryResponse category;
     private List<ProductResponse.VariantResponse> variants;
     private Instant createdAt;
     private Instant updatedAt;
 
+
+    @Data
+    public static class CategoryResponse{
+        private Long id;
+        private String name;
+        private String description;
+        private Integer status;
+        private Instant createdAt;
+        private Instant updatedAt;
+    }
 
     @Data
     public static class VariantResponse{

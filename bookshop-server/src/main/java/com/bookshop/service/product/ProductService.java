@@ -1,16 +1,13 @@
 package com.bookshop.service.product;
 
 
-import com.bookshop.dto.product.CategoryResponse;
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
-import com.bookshop.dto.product.VariantRequest;
 import com.bookshop.entity.product.Category;
 import com.bookshop.entity.product.Product;
 import com.bookshop.entity.product.Variant;
 import com.bookshop.repository.product.CategoryRepository;
 import com.bookshop.repository.product.ProductRepository;
-import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -138,7 +135,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         response.setPages(product.getPages());
         response.setStatus(product.getStatus());
 
-        CategoryResponse categoryResponse = new CategoryResponse();
+        ProductResponse.CategoryResponse  categoryResponse = new ProductResponse.CategoryResponse();
         categoryResponse.setId(product.getCategory().getId());
         categoryResponse.setName(product.getCategory().getName());
         categoryResponse.setDescription(product.getCategory().getDescription());

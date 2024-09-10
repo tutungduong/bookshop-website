@@ -11,6 +11,6 @@ public class ClientCartRequest {
     private Long cartId;
     private Long userId;
     private Set<ClientCartVariantRequest> cartItems;
-    private Integer status;
     private UpdateQuantityType updateQuantityType;
+    private Integer status;
 }

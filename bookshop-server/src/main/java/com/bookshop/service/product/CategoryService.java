@@ -80,12 +80,12 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
     private CategoryResponse mapToResponse(Category category) {
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());
-        response.setCreatedAt(category.getCreatedAt());
-        response.setUpdatedAt(category.getUpdatedAt());
         response.setName(category.getName());
         response.setDescription(category.getDescription());
         response.setStatus(category.getStatus());
         response.setThumbnail(category.getThumbnail());
+        response.setCreatedAt(category.getCreatedAt());
+        response.setUpdatedAt(category.getUpdatedAt());
         return response;
     }
 }
