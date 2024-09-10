@@ -7,7 +7,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends netcat \
     && apt-get clean \
     && apt-get install -y locales \
-
 # Set the working directory inside the container
 WORKDIR /app
 
