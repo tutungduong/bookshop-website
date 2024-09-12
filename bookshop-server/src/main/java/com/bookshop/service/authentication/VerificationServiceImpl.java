@@ -3,6 +3,7 @@ package com.bookshop.service.authentication;
 import com.bookshop.dto.authentication.RegistrationRequest;
 import com.bookshop.dto.authentication.ResetPasswordRequest;
 import com.bookshop.dto.authentication.UserRequest;
+import com.bookshop.dto.authentication.UserResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.authentication.Verification;
 import com.bookshop.entity.authentication.VerificationType;
@@ -170,6 +171,22 @@ public class VerificationServiceImpl implements VerificationService {
         user.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
         user.setResetPasswordToken(null);
         userRepository.save(user);
+    }
+
+    @Override
+    public UserResponse getUserInfo(String username) {
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserResponse response = new UserResponse();
+
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setGmail(user.getEmail());
+        response.setCreatedAt(user.getCreatedAt());
+        response.setUpdatedAt(user.getUpdatedAt());
+
+        return response;
     }
 
     private String generateVerificationToken(){

@@ -4,6 +4,8 @@ package com.bookshop.controller.authentication;
 
 import com.bookshop.config.security.JwtUtils;
 import com.bookshop.dto.authentication.*;
+import com.bookshop.entity.authentication.RefreshToken;
+import com.bookshop.entity.authentication.User;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.service.authentication.RefreshTokenService;
 import com.bookshop.service.authentication.VerificationService;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -25,7 +28,6 @@ import java.time.Instant;
 public class AuthController {
 
     private final VerificationService verificationService;
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
@@ -37,6 +39,9 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
 
+         // Lưu trữ đối tượng Authentication vào SecurityContextHolder
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         String jwt = jwtUtils.generateJwtToken(authentication);
         String refreshToken = refreshTokenService.createRefreshToken(authentication).getToken();
 
@@ -46,8 +51,14 @@ public class AuthController {
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
 
-         String refreshToken = " ";
-         String jwt = " ";
+         String refreshToken = refreshTokenRequest.getRefreshToken();
+
+          String jwt = refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(User::getUsername)
+                .map(jwtUtils::generateTokenFromUsername)
+                .orElseThrow(() -> new RuntimeException("Refresh token was expired. Please make a new signin request!"));
 
         return ResponseEntity.ok(new JwtResponse("Refresh token", jwt, refreshToken, Instant.now()));
     }
@@ -93,10 +104,12 @@ public class AuthController {
          return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
      }
 
-     // Get user info
-//    @GetMapping("/info")
-//    public ResponseEntity<UserResponse> getAdminUserInfo(Authentication authentication){
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
-//    }
+     // Bug don't can get use info from Authentication
+    @GetMapping("/info")
+    public ResponseEntity<UserResponse> getAdminUserInfo(Authentication authentication){
+
+         String username = authentication.getName();
+
+         return ResponseEntity.status(HttpStatus.OK).body(verificationService.getUserInfo(username));
+    }
 }
