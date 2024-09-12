@@ -12,6 +12,7 @@ import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.authentication.VerificationRepository;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -25,6 +26,7 @@ import java.util.Random;
 public class VerificationServiceImpl implements VerificationService {
     private final UserRepository userRepository;
     private final VerificationRepository verificationRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Long generateTokenVerify(UserRequest userRequest) {
@@ -165,7 +167,7 @@ public class VerificationServiceImpl implements VerificationService {
                 .findByEmailAndResetPasswordToken(resetPasswordRequest.getEmail(), resetPasswordRequest.getToken())
                 .orElseThrow(() -> new RuntimeException("Email and/or token are invalid"));
 
-        user.setPassword(resetPasswordRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
         user.setResetPasswordToken(null);
         userRepository.save(user);
     }
@@ -176,10 +178,12 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     private User requestToEntity(UserRequest userRequest) {
-        return new User()
-                .setUsername(userRequest.getUsername())
-                .setPassword(userRequest.getPassword())
-                .setEmail(userRequest.getGmail());
+        User user = new User();
+        user.setUsername(userRequest.getUsername());
+        user.setEmail(userRequest.getGmail());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
+        return user;
     }
 
 }

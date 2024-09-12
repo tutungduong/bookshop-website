@@ -2,8 +2,10 @@ package com.bookshop.controller.authentication;
 
 
 
+import com.bookshop.config.security.JwtUtils;
 import com.bookshop.dto.authentication.*;
 import com.bookshop.repository.authentication.UserRepository;
+import com.bookshop.service.authentication.RefreshTokenService;
 import com.bookshop.service.authentication.VerificationService;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,6 +13,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -22,21 +26,26 @@ public class AuthController {
 
     private final VerificationService verificationService;
     private final UserRepository userRepository;
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final RefreshTokenService refreshTokenService;
 
     // Login Account
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser (@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+        );
 
-
-        String jwt = "";
-        String refreshToken = "";
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        String refreshToken = refreshTokenService.createRefreshToken(authentication).getToken();
 
         return ResponseEntity.ok(new JwtResponse("Login successful", jwt, refreshToken, Instant.now()));
     }
     // Refresh token account
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
+
          String refreshToken = " ";
          String jwt = " ";
 
