@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -20,13 +21,12 @@ import java.time.Instant;
 public class AuthController {
 
     private final VerificationService verificationService;
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
 
     // Login Account
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser (@RequestBody LoginRequest loginRequest) {
-
-
 
 
         String jwt = "";
@@ -37,9 +37,6 @@ public class AuthController {
     // Refresh token account
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
-
-
-
          String refreshToken = " ";
          String jwt = " ";
 
