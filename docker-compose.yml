@@ -1,0 +1,97 @@
+# version: '3.8'
+
+# services:
+#   server:
+#     container_name: server
+#     image: server
+#     restart: on-failure
+#     depends_on:
+#       database:
+#         # condition: service_healthy
+#     build:
+#       context: ./bookshop-server
+#       dockerfile: Dockerfile
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/bookshop
+#       SPRING_DATASOURCE_USERNAME: root
+#       SPRING_DATASOURCE_PASSWORD: 123456
+#     ports:
+#       - 8085:8085
+#     networks:
+#       - network
+
+#   database:
+#     container_name: database
+#     image: mysql:8.0
+#     # restart: unless-stopped
+#     cap_add:
+#       - SYS_NICE
+#     environment:
+#       MYSQL_ROOT_PASSWORD: 123456
+#       MYSQL_DATABASE: bookshop
+#       LANG: C.UTF-8
+#     ports:
+#       - 3306:3306
+#     networks:
+#       - network
+#     volumes:
+#       - storage:/var/lib/mysql
+#       # - ./server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/init.sql
+#     command: --sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION" --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --general-log=1 --general-log-file=/tmp/mysql-general-log.log
+#     # healthcheck:
+#     #   test: ["CMD", "mysqladmin", "ping", "--silent"]
+#     #   interval: 10s
+#     #   timeout: 5s
+#     #   retries: 5
+
+# volumes:
+#   storage:
+#     driver: local
+
+# networks:
+#   network:
+#     driver: bridge
+
+version: '3.8'
+
+services:
+  server:
+    container_name: server
+    image: server
+    restart: on-failure
+    build:
+      context: ./bookshop-server
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/bookshop
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456
+    ports:
+      - 8085:8085
+    networks:
+      - network
+
+  database:
+    container_name: database
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: bookshop
+      LANG: C.UTF-8
+    ports:
+      - 3306:3306
+    networks:
+      - network
+    volumes:
+      - storage:/var/lib/mysql
+      # Uncomment if you have initialization scripts
+      # - ./server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  storage:
+    driver: local
+
+networks:
+  network:
+    driver: bridge
