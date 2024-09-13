@@ -27,8 +27,8 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + jwtExpiration))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(new Date(new Date().getTime() + this.jwtExpiration))
+                .signWith(SignatureAlgorithm.HS512, this.jwtSecret)
                 .compact();
     }
 
@@ -36,8 +36,8 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + jwtExpiration))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(new Date(new Date().getTime() + this.jwtExpiration))
+                .signWith(SignatureAlgorithm.HS512, this.jwtSecret)
                 .compact();
     }
 

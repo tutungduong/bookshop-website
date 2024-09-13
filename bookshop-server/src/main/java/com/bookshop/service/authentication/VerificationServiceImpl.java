@@ -182,7 +182,7 @@ public class VerificationServiceImpl implements VerificationService {
 
         response.setId(user.getId());
         response.setUsername(user.getUsername());
-        response.setGmail(user.getEmail());
+        response.setEmail(user.getEmail());
         response.setCreatedAt(user.getCreatedAt());
         response.setUpdatedAt(user.getUpdatedAt());
 

@@ -11,6 +11,7 @@ public class UserResponse {
     private Instant createdAt;
     private Instant updatedAt;
     private String username;
-    private String password;
-    private String gmail;
+    private String fullname;
+    private String email;
+    private Integer status;
 }

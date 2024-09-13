@@ -25,6 +25,7 @@ import java.time.Instant;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final VerificationService verificationService;
@@ -38,9 +39,6 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
-
-         // Lưu trữ đối tượng Authentication vào SecurityContextHolder
-        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtUtils.generateJwtToken(authentication);
         String refreshToken = refreshTokenService.createRefreshToken(authentication).getToken();
@@ -112,4 +110,5 @@ public class AuthController {
 
          return ResponseEntity.status(HttpStatus.OK).body(verificationService.getUserInfo(username));
     }
+
 }
