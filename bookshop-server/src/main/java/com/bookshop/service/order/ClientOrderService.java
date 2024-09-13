@@ -13,7 +13,7 @@ public interface ClientOrderService {
 
     ClientConfirmedOrderResponse createClientOrder(ClientSimpleOrderRequest request);
 
-    List<ClientSimpleOrderResponse> get(Long userId);
+    List<ClientSimpleOrderResponse> get(String username);
 
-    ClientOrderDetailResponse get(String code);
+    ClientOrderDetailResponse getCode(String code);
 }

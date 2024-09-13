@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface ClientWishService {
-    List<ClientWishResponse> get(Long userId);
+    List<ClientWishResponse> get(String username);
     ClientWishResponse save(ClientWishRequest request);
     void delete(List<Long> ids);
 }

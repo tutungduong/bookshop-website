@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,13 +25,16 @@ public class ClientOderController {
     private final ClientOrderService clientOrderService;
 
     @GetMapping
-    public ResponseEntity<List<ClientSimpleOrderResponse>> getAllOrder(@RequestParam Long userId) {
-         return ResponseEntity.status(HttpStatus.OK).body(clientOrderService.get(userId));
+    public ResponseEntity<List<ClientSimpleOrderResponse>> getAllOrder(Authentication authentication) {
+
+        String username = authentication.getName();
+
+        return ResponseEntity.status(HttpStatus.OK).body(clientOrderService.get(username));
     }
 
     @GetMapping("/code")
     public ResponseEntity<ClientOrderDetailResponse> getOrder(@RequestParam String code) {
-        return ResponseEntity.status(HttpStatus.OK).body(clientOrderService.get(code));
+        return ResponseEntity.status(HttpStatus.OK).body(clientOrderService.getCode(code));
     }
 
    @PutMapping("/cancel/{code}")

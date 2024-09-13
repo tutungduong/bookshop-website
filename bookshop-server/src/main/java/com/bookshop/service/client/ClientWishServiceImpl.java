@@ -26,10 +26,12 @@ public class ClientWishServiceImpl implements ClientWishService {
     private final ProductRepository productRepository;
 
     @Override
-    public List<ClientWishResponse> get(Long userId) {
+    public List<ClientWishResponse> get(String username) {
 
-        return wishRepository.findById(userId)
-                .stream()
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return wishRepository.findById(user.getId()).stream()
                 .map(this::entityToResponse)
                 .collect(Collectors.toList());
     }

@@ -116,11 +116,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
     }
 
     @Override
-    public List<ClientSimpleOrderResponse> get(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        String username = user.getUsername();
+    public List<ClientSimpleOrderResponse> get(String username) {
 
         return orderRepository.findByUsername(username).stream()
                 .map(this::entityToResponse)
@@ -128,7 +124,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
     }
 
     @Override
-    public ClientOrderDetailResponse get(String code) {
+    public ClientOrderDetailResponse getCode(String code) {
 
         Order order = orderRepository.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Order not found"));

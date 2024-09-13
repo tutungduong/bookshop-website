@@ -25,7 +25,6 @@ import java.time.Instant;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final VerificationService verificationService;

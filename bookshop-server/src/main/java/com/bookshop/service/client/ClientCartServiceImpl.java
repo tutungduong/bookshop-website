@@ -28,14 +28,9 @@ public class ClientCartServiceImpl implements ClientCartService {
 
 
     @Override
-    public List<ClientCartResponse> get(Long userId) {
-        if (userId == null) {
-            throw new RuntimeException("User ID is required");
-        }
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    public List<ClientCartResponse> get(String username) {
 
-        return cartRepository.findByUsername(user.getUsername()).stream()
+        return cartRepository.findByUsername(username).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }

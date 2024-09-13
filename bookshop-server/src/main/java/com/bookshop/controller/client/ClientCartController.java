@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,9 @@ public class ClientCartController {
     private final ClientCartService clientCartService;
 
     @GetMapping
-    public ResponseEntity<List<ClientCartResponse>> getCart(@RequestParam Long userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(clientCartService.get(userId));
+    public ResponseEntity<List<ClientCartResponse>> getCart(Authentication authentication) {
+        String username = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(clientCartService.get(username));
     }
 
     @PostMapping
