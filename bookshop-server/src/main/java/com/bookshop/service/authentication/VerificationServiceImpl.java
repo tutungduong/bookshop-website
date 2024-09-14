@@ -36,13 +36,13 @@ public class VerificationServiceImpl implements VerificationService {
             throw new VerificationException("Username is existing");
         }
        // (2) Check if gmail existing in database
-        if (userRepository.existsUserByEmail(userRequest.getGmail())) {
+        if (userRepository.existsUserByEmail(userRequest.getEmail())) {
             throw new VerificationException("Email already taken");
         }
 
         // (3) Create user entity with status 2 (non-verified) and save to database
 
-        User user = requestToEntity(userRequest);
+        User user = mapToEntity(userRequest);
         user.setStatus(2);
         userRepository.save(user);
 
@@ -178,15 +178,7 @@ public class VerificationServiceImpl implements VerificationService {
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-        UserResponse response = new UserResponse();
-
-        response.setId(user.getId());
-        response.setUsername(user.getUsername());
-        response.setEmail(user.getEmail());
-        response.setCreatedAt(user.getCreatedAt());
-        response.setUpdatedAt(user.getUpdatedAt());
-
-        return response;
+        return mapToResponse(user);
     }
 
     private String generateVerificationToken(){
@@ -194,13 +186,35 @@ public class VerificationServiceImpl implements VerificationService {
         return String.format("%04d", random.nextInt(10000));
     }
 
-    private User requestToEntity(UserRequest userRequest) {
+    private User mapToEntity(UserRequest userRequest) {
         User user = new User();
         user.setUsername(userRequest.getUsername());
-        user.setEmail(userRequest.getGmail());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-
+        user.setFullname(userRequest.getFullname());
+        user.setEmail(userRequest.getEmail());
+        user.setPhone(userRequest.getPhone());
+        user.setGender(userRequest.getGender());
+        user.setAddress(userRequest.getAddress());
+        user.setAvatar(userRequest.getAvatar());
+        user.setStatus(userRequest.getStatus());
         return user;
     }
 
+
+    private UserResponse mapToResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setCreatedAt(user.getCreatedAt());
+        response.setUpdatedAt(user.getUpdatedAt());
+        response.setUsername(user.getUsername());
+        response.setFullname(user.getFullname());
+        response.setEmail(user.getEmail());
+        response.setPhone(user.getPhone());
+        response.setGender(user.getGender());
+        response.setAddress(user.getAddress());
+        response.setAvatar(user.getAvatar());
+        response.setStatus(user.getStatus());
+
+        return response;
+    }
 }

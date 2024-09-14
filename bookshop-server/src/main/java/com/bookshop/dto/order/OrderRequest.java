@@ -12,13 +12,13 @@ import java.util.Set;
 public class OrderRequest {
     private Long userId;
     private Integer status;
-//    private String toName;
-//    private String toPhone;
-//    private String toAddress;
-//    @Nullable
-//    private Long orderCancellationReasonId;
-//    @Nullable
-//    private String note;
+    private String toName;
+    private String toPhone;
+    private String toAddress;
+    @Nullable
+    private Long orderCancellationReasonId;
+    @Nullable
+    private String note;
 
 //    private Set<OrderVariantRequest> orderVariants;
       private Long variantId;

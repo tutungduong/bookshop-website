@@ -32,8 +32,27 @@ public class User extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "fullname", nullable = false)
+    private String fullname;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+//    @Column(name = "gender", nullable = false, columnDefinition = "CHAR")
+    @Column(name = "gender", nullable = false)
+    private String gender;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    @Column(name = "avatar")
+    private String avatar;
+
+    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
+    private Integer status;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -46,9 +65,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Wish> wishes = new ArrayList<>();
-
-    @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
-    private Integer status;
 
     @OneToOne(mappedBy = "user")
     private Verification verification;

@@ -16,11 +16,11 @@ public class OrderResponse {
     private Instant updatedAt;
     private String code;
     private Integer status;
-//    private String toName;
-//    private String toPhone;
-//    private String toAddress;
-//    @Nullable
-//    private OrderCancellationReasonResponse orderCancellationReason;
+    private String toName;
+    private String toPhone;
+    private String toAddress;
+    @Nullable
+    private OrderCancellationReasonResponse orderCancellationReason;
     @Nullable
     private String note;
     private OrderResponse.UserResponse user;

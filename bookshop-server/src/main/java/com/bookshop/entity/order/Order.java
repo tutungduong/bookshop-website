@@ -33,15 +33,15 @@ public class Order extends BaseEntity {
     @JsonBackReference
     private User user;
 
-//    @Column(name = "to_name", nullable = false)
-//    private String toName;
-//
-//    @Column(name = "to_phone", nullable = false)
-//    private String toPhone;
-//
-//    @Column(name = "to_address", nullable = false)
-//    private String toAddress;
-//
+    @Column(name = "to_name", nullable = false)
+    private String toName;
+
+    @Column(name = "to_phone", nullable = false)
+    private String toPhone;
+
+    @Column(name = "to_address", nullable = false)
+    private String toAddress;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_cancellation_reason_id")
     @JsonBackReference
@@ -49,7 +49,6 @@ public class Order extends BaseEntity {
 
     @Column(name = "note")
     private String note;
-
 
     @Column(name = "status", nullable = false, columnDefinition = "TINYINT")
     private Integer status;

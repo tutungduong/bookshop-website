@@ -12,6 +12,8 @@ import com.bookshop.repository.cart.CartRepository;
 import com.bookshop.repository.order.OrderRepository;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -47,21 +49,25 @@ public class ClientOrderServiceImpl implements ClientOrderService {
 
     @Override
     public ClientConfirmedOrderResponse createClientOrder(ClientSimpleOrderRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userRepository.findById(request.getUserId())
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        String username = user.getUsername();
 
         Cart cart = cartRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
         // (1) Tạo đơn hàng
-
         Order order = new Order();
+
         order.setCode(RandomString.make(12).toUpperCase());
-        order.setStatus(1);
+        order.setStatus(1); // Status 1: Đơn hàng mới
         order.setUser(user);
+        order.setToPhone(user.getPhone());
+        order.setToName(user.getFullname());
+        order.setToAddress(user.getAddress());
 
          order.setOrderVariants(cart.getCartVariants().stream()
                 .map(cartVariant -> {
@@ -102,17 +108,18 @@ public class ClientOrderServiceImpl implements ClientOrderService {
 
       if (request.getPaymentMethodType() == PaymentMethodType.CASH) {
              orderRepository.save(order);
-         }
-         else{
-
-             // will update Method Payment Paypal later
-              throw new RuntimeException("Cannot identify payment method");
-        }
+      } else if (request.getPaymentMethodType() == PaymentMethodType.PAYPAL) {
+          // will update Method Payment Paypal later
+          throw new RuntimeException("Cannot identify payment method");
+      }
+      else{
+           throw new RuntimeException("Cannot identify payment method");
+      }
        // (4) Vô hiệu cart
-            cart.setStatus(2); // Status 2: Vô hiệu lực
-            cartRepository.save(cart);
+       cart.setStatus(2); // Status 2: Vô hiệu lực
+       cartRepository.save(cart);
 
-            return response;
+       return response;
     }
 
     @Override
@@ -175,10 +182,14 @@ public class ClientOrderServiceImpl implements ClientOrderService {
         response.setOrderCreatedAt(order.getCreatedAt());
         response.setOrderCode(order.getCode());
         response.setOrderStatus(order.getStatus());
+        response.setOrderToName(order.getToName());
+        response.setOrderToPhone(order.getToPhone());
+        response.setOrderToAddress(order.getToAddress());
         response.setOrderTotalAmount(order.getTotalAmount());
         response.setOrderTax(order.getTax());
         response.setOrderTotalPay(order.getTotalPay());
         response.setOrderPaymentMethodType(order.getPaymentMethodType());
+        response.setOrderPaymentStatus(order.getPaymentStatus());
 
         Set<ClientOrderVariantResponse> clientOrderVariantResponses = order.getOrderVariants().stream()
                 .map(orderVariant -> {

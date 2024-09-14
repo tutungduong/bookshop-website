@@ -4,5 +4,5 @@ public enum PaymentMethodType {
     CASH,
 
     // will update paypal
-//    PAYPAL
+    PAYPAL
 }

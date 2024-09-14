@@ -13,12 +13,9 @@ public class ClientOrderDetailResponse {
     private Instant orderCreatedAt;
     private String orderCode;
     private Integer orderStatus;
-//    private String orderToName;
-//    private String orderToPhone;
-//    private String orderToAddress;
-//    private String orderToWardName;
-//    private String orderToDistrictName;
-//    private String orderToProvinceName;
+    private String orderToName;
+    private String orderToPhone;
+    private String orderToAddress;
     private BigDecimal orderTotalAmount;
     private BigDecimal orderTax;
     private BigDecimal orderTotalPay;
