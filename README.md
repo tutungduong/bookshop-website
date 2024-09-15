@@ -2,9 +2,12 @@
 <a name="readme-top"></a>
 
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Spring_Boot.svg" alt="logo" width="100" height="auto" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Spring_Boot.svg" alt="Spring Boot Logo" width="100" height="auto" />
   <h3><b>Book Store</b></h3>
+  <p>An online platform to explore, discover, and purchase your favorite books.</p>
 </div>
+
+---
 
 <!-- Badges -->
 ![GitHub stars](https://img.shields.io/github/stars/tutungduong/bookshop-website?style=social)
@@ -21,60 +24,59 @@
 
 - [Introduction](#introduction)
 - [Class Diagram](#class-diagram)
-- [Used Technologies](#used-technologies)
+- [Technologies Used](#technologies-used)
 - [Modules](#modules)
 - [Features](#features)
 - [Installation & Setup](#installation--setup)
-<!-- - [Contributing](#contributing) -->
+- [Docker Setup](#docker-setup-optional)
+- [Contributing](#contributing)
 - [License](#license)
 
 ---
 
 ## Introduction
 
-The **Book Store** is an online platform for book lovers to browse, discover, and purchase books across a wide range of categories. It offers a streamlined, secure, and user-friendly experience, complete with personalized recommendations, a shopping cart system, and checkout functionality. This project leverages modern web development technologies to provide a responsive and scalable service for users.
+The **Book Store** project is an online platform for book enthusiasts, offering an intuitive way to browse, discover, and purchase books across various categories. The platform features personalized recommendations, a secure shopping cart system, and streamlined checkout processes. Built using modern technologies, this project ensures a responsive, scalable, and secure service for users.
 
 ## Class Diagram
 
-Below is the Class Diagram of the **Book Store** system, showing the relationships between entities like `User`, `Product`, `Order`, `Cart`, and `Payment`.
+The class diagram below represents the core entities of the **Book Store** system, including `User`, `Product`, `Order`, `Cart`, and `Payment`.
 
-<p align="center" style="background-color: white;">
-  <img src="https://github.com/user-attachments/assets/3e76e7f8-2683-401c-ba19-9028ced82d47" alt="Use Case Diagram" width="600" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3e76e7f8-2683-401c-ba19-9028ced82d47" alt="Class Diagram" width="600" />
   <br>
   <em>Class Diagram</em>
 </p>
 
-| (1)                                                                                           | (2)                                                                                           | (3)                                                                                           |
-| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/1be0b1dc-9979-494b-b2d1-dad9e5236245" alt="Class Diagram – Authentication" width="200" /> | <img src="https://github.com/user-attachments/assets/fd1aee9a-e58e-44a8-b005-14b5d3bb50bc" alt="Class Diagram – Product" width="200" /> | <img src="https://github.com/user-attachments/assets/a0988dd5-6ff7-43b2-8c9b-e19ebd765b86" alt="Class Diagram – Cart" width="200" /> |
-| <img src="https://github.com/user-attachments/assets/54fe29e8-7799-4367-8e26-06fa1d3237fc" alt="Class Diagram – Order" width="200" /> | <img src="https://github.com/user-attachments/assets/e5d5f11a-e6b4-4f21-86cd-f9853bcb71b7" alt="Class Diagram – Cashbook" width="200" /> | <img src="https://github.com/user-attachments/assets/6a31e449-cfe6-460a-b14a-7ba2c8b3454e" alt="Class Diagram – Miscellaneous" width="200" /> |
+| Authentication | Product | Cart |
+| -------------- | ------- | ---- |
+| <img src="https://github.com/user-attachments/assets/1be0b1dc-9979-494b-b2d1-dad9e5236245" alt="Authentication Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/fd1aee9a-e58e-44a8-b005-14b5d3bb50bc" alt="Product Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/a0988dd5-6ff7-43b2-8c9b-e19ebd765b86" alt="Cart Class Diagram" width="200" /> |
 
-## Used Technologies
+| Order          | Cashbook | General |
+| -------------- | -------- | -------------- |
+| <img src="https://github.com/user-attachments/assets/54fe29e8-7799-4367-8e26-06fa1d3237fc" alt="Order Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/e5d5f11a-e6b4-4f21-86cd-f9853bcb71b7" alt="Cashbook Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/6a31e449-cfe6-460a-b14a-7ba2c8b3454e" alt="General Class Diagram" width="200" /> |
 
-This project utilizes a variety of modern technologies to ensure efficiency, security, and scalability:
+## Technologies Used
+
+The project uses a variety of modern technologies to ensure scalability, efficiency, and security:
 
 - **Backend**: Spring Boot, Spring Data JPA, Spring Security
-- **Frontend**: Bootstrap, CSS, JavaScript (will update)
+- **Frontend**: Bootstrap, CSS, JavaScript
 - **Database**: MySQL
 - **Build Tool**: Maven
-<!-- - **Others**: Lombok for reducing boilerplate code, Docker for containerization -->
+<!-- - **Others**: Lombok, Docker for containerization -->
 
 ## Modules
 
-The project is organized into several key modules:
-
-1. **User Management**: Handles user registration, authentication, and authorization (JWT-based).
-2. **Book Management**: Allows admin users to add, edit, and delete books, while regular users can browse and search.
-3. **Shopping Cart**: Users can add/remove books from their cart and proceed to checkout.
-4. **Order Management**: Manages order placement, payment processing, and order history.
-5. **Wishes**: Allows users to save books to a wishlist for future consideration or purchase.
-
+1. **User Management**: Handles registration, login, and role-based authorization (JWT).
+2. **Book Management**: Admins can manage books (CRUD), while users can browse and search books.
+3. **Shopping Cart**: Users can add/remove items to/from their cart and checkout.
+4. **Order Management**: Processes orders, payments, and maintains order history.
+5. **Wishlist**: Users can add books to their wishlist for future purchases.
 
 ## Installation & Setup
 
 ### Prerequisites
-
-Before you begin, ensure you have met the following requirements:
 
 - Java 17+
 - MySQL
@@ -82,47 +84,49 @@ Before you begin, ensure you have met the following requirements:
 
 ### Installation
 
-1. **Clone the repository:**
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/tutungduong/bookshop-website.git
    cd bookshop-website
    ```
 
-<!-- 2. **Set up MySQL:**
+2. **Set up MySQL**:
    - Create a new database named `bookshop`.
-   - Update your database credentials in `src/main/resources/application.properties`. -->
+   - Update your MySQL credentials in `src/main/resources/application.properties`.
 
-2. **Build and run the application:**
+3. **Build and run the application**:
    ```bash
    ./mvnw clean install
    ./mvnw spring-boot:run
    ```
 
-3. **Access the application:**
-   Open your browser and navigate to [http://localhost:8085/api](http://localhost:8085/api).
-<!-- 
-### Docker Setup (Optional)
+4. **Access the application**:
+   Open [http://localhost:8085/api](http://localhost:8085/api) in your browser.
 
-If you prefer to run the application in a Docker container:
+## Docker Setup (Optional)
 
-1. **Build the Docker image:**
+To run the application using Docker:
+
+1. **Build and start the container**:
    ```bash
    docker-compose up --build
    ```
 
-2. **Access the application:**
-   Go to [http://localhost:8080](http://localhost:8080). -->
+2. **Access the application**:
+   Open [http://localhost:8085/api](http://localhost:8085/api).
 
-<!-- ## Contributing
+## Contributing
 
-We welcome contributions! To contribute to this project, follow these steps:
+We welcome contributions! Here's how you can contribute:
 
 1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-name`).
-3. Commit your changes (`git commit -m 'Add new feature'`).
+2. Create a feature branch (`git checkout -b feature-name`).
+3. Commit your changes (`git commit -m 'Add feature'`).
 4. Push to the branch (`git push origin feature-name`).
-5. Open a pull request. -->
+5. Open a pull request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
