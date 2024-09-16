@@ -30,11 +30,12 @@ services:
       MYSQL_DATABASE: bookshop
       LANG: C.UTF-8
     ports:
-      - 3306:3306
+      - 3308:3306
     networks:
       - network
     volumes:
       - storage:/var/lib/mysql
+      # - ./server/src/main/resources/address.sql:/docker-entrypoint-initdb.d/init.sql
     command: --sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION" --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --general-log=1 --general-log-file=/tmp/mysql-general-log.log
     healthcheck:
       # Reference: https://stackoverflow.com/a/74905088
@@ -42,6 +43,7 @@ services:
       interval: 5s
       timeout: 30s
       retries: 20
+
 volumes:
   storage:
     driver: local
