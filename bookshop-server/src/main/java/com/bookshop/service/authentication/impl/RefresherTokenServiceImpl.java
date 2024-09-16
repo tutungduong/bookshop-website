@@ -1,8 +1,9 @@
-package com.bookshop.service.authentication;
+package com.bookshop.service.authentication.impl;
 
 import com.bookshop.entity.authentication.RefreshToken;
 import com.bookshop.repository.authentication.RefreshTokenRepository;
 import com.bookshop.repository.authentication.UserRepository;
+import com.bookshop.service.authentication.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.bookshop.service.authentication;
+package com.bookshop.service.authentication.impl;
 
 import com.bookshop.dto.authentication.RegistrationRequest;
 import com.bookshop.dto.authentication.ResetPasswordRequest;
@@ -11,6 +11,7 @@ import com.bookshop.exception.ExpiredTokenException;
 import com.bookshop.exception.VerificationException;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.authentication.VerificationRepository;
+import com.bookshop.service.authentication.VerificationService;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;

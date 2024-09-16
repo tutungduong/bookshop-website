@@ -1,4 +1,4 @@
-package com.bookshop.service.client;
+package com.bookshop.service.client.impl;
 
 
 
@@ -10,6 +10,7 @@ import com.bookshop.entity.product.Product;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.client.WishRepository;
 import com.bookshop.repository.product.ProductRepository;
+import com.bookshop.service.client.ClientWishService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

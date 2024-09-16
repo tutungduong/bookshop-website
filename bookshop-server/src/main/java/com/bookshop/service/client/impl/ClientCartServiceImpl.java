@@ -1,4 +1,4 @@
-package com.bookshop.service.client;
+package com.bookshop.service.client.impl;
 
 
 import com.bookshop.dto.client.*;
@@ -11,6 +11,7 @@ import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.cart.CartRepository;
 import com.bookshop.repository.cart.CartVariantRepository;
 import com.bookshop.repository.product.VariantRepository;
+import com.bookshop.service.client.ClientCartService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
