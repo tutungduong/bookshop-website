@@ -14,6 +14,7 @@ import com.bookshop.repository.authentication.VerificationRepository;
 import com.bookshop.service.authentication.VerificationService;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class VerificationServiceImpl implements VerificationService {
         user.setStatus(2);
         userRepository.save(user);
 
-          // (4) Create new verification entity and set user, token
+        // (4) Create new verification entity and set user, token
 
         Verification verification = new Verification();
         String token = generateVerificationToken();
@@ -58,6 +59,8 @@ public class VerificationServiceImpl implements VerificationService {
         verification.setType(VerificationType.REGISTRATION);
 
         verificationRepository.save(verification);
+
+        // (5) Send mail
 
          return user.getId();
     }
@@ -76,6 +79,8 @@ public class VerificationServiceImpl implements VerificationService {
                 verification.setExpiredAt(Instant.now().plus(5, ChronoUnit.MINUTES));
 
                 verificationRepository.save(verification);
+
+                // Send Mail
 
             }
         }
@@ -121,8 +126,7 @@ public class VerificationServiceImpl implements VerificationService {
             if (!verification.getToken().equals(registration.getToken())) {
                 throw new VerificationException("Invalid token");
             }
-        }
-            else {
+        }else {
                 throw new VerificationException("User does not exist");
 
             }
@@ -132,21 +136,21 @@ public class VerificationServiceImpl implements VerificationService {
     public void changeRegistrationEmail(Long userId, String emailUpdate) {
           Optional<Verification> verifyOpt = verificationRepository.findByUserId(userId);
 
-    if (verifyOpt.isPresent()) {
-        Verification verification = verifyOpt.get();
+        if (verifyOpt.isPresent()) {
+            Verification verification = verifyOpt.get();
 
-        User user = verification.getUser();
-        user.setEmail(emailUpdate);
-        userRepository.save(user);
+            User user = verification.getUser();
+            user.setEmail(emailUpdate);
+            userRepository.save(user);
 
-        String token = generateVerificationToken();
-        verification.setToken(token);
-        verification.setExpiredAt(Instant.now().plus(5, ChronoUnit.MINUTES));
-        verificationRepository.save(verification);
+            String token = generateVerificationToken();
+            verification.setToken(token);
+            verification.setExpiredAt(Instant.now().plus(5, ChronoUnit.MINUTES));
+            verificationRepository.save(verification);
 
-    } else {
-        throw new VerificationException("User does not exist");
-    }
+        } else {
+            throw new VerificationException("User does not exist");
+        }
     }
 
     @Override
@@ -177,7 +181,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public UserResponse getUserInfo(String username) {
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
         return mapToResponse(user);
     }

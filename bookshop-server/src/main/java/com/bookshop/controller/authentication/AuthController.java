@@ -1,12 +1,12 @@
 package com.bookshop.controller.authentication;
 
 
-
 import com.bookshop.config.security.JwtUtils;
+import com.bookshop.constant.AppConstants;
 import com.bookshop.dto.authentication.*;
 import com.bookshop.entity.authentication.RefreshToken;
 import com.bookshop.entity.authentication.User;
-import com.bookshop.repository.authentication.UserRepository;
+import com.bookshop.exception.RefreshTokenException;
 import com.bookshop.service.authentication.RefreshTokenService;
 import com.bookshop.service.authentication.VerificationService;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -24,6 +24,7 @@ import java.time.Instant;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@CrossOrigin(AppConstants.FRONTEND_HOST)
 public class AuthController {
 
     private final VerificationService verificationService;
@@ -31,7 +32,6 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
 
-    // Login Account
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser (@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -43,7 +43,7 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtResponse("Login successful", jwt, refreshToken, Instant.now()));
     }
-    // Refresh token account
+
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
 
@@ -54,58 +54,50 @@ public class AuthController {
                 .map(RefreshToken::getUser)
                 .map(User::getUsername)
                 .map(jwtUtils::generateTokenFromUsername)
-                .orElseThrow(() -> new RuntimeException("Refresh token was expired. Please make a new signin request!"));
+                .orElseThrow(() -> new RefreshTokenException("Refresh token was expired. Please make a new signin request!"));
 
         return ResponseEntity.ok(new JwtResponse("Refresh token", jwt, refreshToken, Instant.now()));
     }
 
-    // Register a new user
     @PostMapping("/register")
      public ResponseEntity<RegistrationResponse> registerUser(@RequestBody UserRequest userRequest) {
         Long userId = verificationService.generateTokenVerify(userRequest);
         return ResponseEntity.status(HttpStatus.OK).body(new RegistrationResponse(userId));
     }
 
-    // Resend verification token
     @GetMapping("/register/{userId}/resend-token")
     public ResponseEntity<ObjectNode> resendRegistrationToken(@PathVariable Long userId){
         verificationService.resendRegistrationToken(userId);
         return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
     }
 
-    // Confirm registration
     @PostMapping("/register/confirm")
     public ResponseEntity<ObjectNode> confirmRegistration(@RequestBody RegistrationRequest registration){
         verificationService.confirmRegistration(registration);
         return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
     }
-    // Change email
+
     @PutMapping("/registration/{userId}/change-email")
     public ResponseEntity<ObjectNode> changeRegistrationEmail(@PathVariable Long userId, @RequestParam String email) {
         verificationService.changeRegistrationEmail(userId, email);
         return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
     }
 
-    // Forgot password
     @GetMapping("/forgot-password")
      public ResponseEntity<ObjectNode> forgotPassword(@RequestParam String email){
         verificationService.forgetPassword(email);
         return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
     }
 
-    // Reset password
      @PutMapping("/reset-password")
      public ResponseEntity<ObjectNode> resetPassword(@RequestBody ResetPasswordRequest resetPassword) {
-        verificationService.resetPassword(resetPassword);
+         verificationService.resetPassword(resetPassword);
          return ResponseEntity.status(HttpStatus.OK).body(new ObjectNode(JsonNodeFactory.instance));
      }
 
-     // Bug don't can get use info from Authentication
     @GetMapping("/info")
     public ResponseEntity<UserResponse> getAdminUserInfo(Authentication authentication){
-
          String username = authentication.getName();
-
          return ResponseEntity.status(HttpStatus.OK).body(verificationService.getUserInfo(username));
     }
 

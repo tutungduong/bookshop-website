@@ -1,15 +1,17 @@
 package com.bookshop.service.product;
 
 
+import com.bookshop.constant.FieldName;
+import com.bookshop.constant.ResourceName;
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
 import com.bookshop.entity.product.Category;
 import com.bookshop.entity.product.Product;
 import com.bookshop.entity.product.Variant;
+import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.product.CategoryRepository;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.service.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +79,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         // Update category only if categoryId from request is not null
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new EntityNotFoundException("Category with ID " + request.getCategoryId() + " not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CATEGORY, FieldName.ID, request.getCategoryId()));
             product.setCategory(category);
         }
         product.setVariants(request.getVariants().stream()
@@ -105,7 +107,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         // Update category only if categoryId from request is not null
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new EntityNotFoundException("Category with ID " + request.getCategoryId() + " not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CATEGORY, FieldName.ID, request.getCategoryId()));
             product.setCategory(category);
         }
         product.setVariants(request.getVariants().stream()

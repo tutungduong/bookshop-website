@@ -1,12 +1,18 @@
 package com.bookshop.service.client.impl;
 
 
-import com.bookshop.dto.client.*;
+import com.bookshop.constant.FieldName;
+import com.bookshop.constant.ResourceName;
+import com.bookshop.dto.client.ClientCartRequest;
+import com.bookshop.dto.client.ClientCartResponse;
+import com.bookshop.dto.client.ClientCartVariantKeyRequest;
+import com.bookshop.dto.client.ClientCartVariantResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cart.Cart;
 import com.bookshop.entity.cart.CartVariant;
 import com.bookshop.entity.cart.CartVariantKey;
 import com.bookshop.entity.product.Variant;
+import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.cart.CartRepository;
 import com.bookshop.repository.cart.CartVariantRepository;
@@ -60,15 +66,11 @@ public class ClientCartServiceImpl implements ClientCartService {
         cartVariantRepository.deleteAllById(id);
     }
 
-private Cart mapToEntity(ClientCartRequest request) {
+    private Cart mapToEntity(ClientCartRequest request) {
     Cart cart = new Cart();
 
-    if(request.getUserId() == null){
-        throw new RuntimeException("User ID is required");
-    }
-
     User user = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + request.getUserId()));
+            .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getCartId()));
 
     cart.setUser(user);
     cart.setStatus(request.getStatus());
@@ -78,12 +80,10 @@ private Cart mapToEntity(ClientCartRequest request) {
             CartVariant cartVariant = new CartVariant();
             cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
 
-            if(clientCartVariantRequest.getVariantId() == null){
-                throw new RuntimeException("Variant ID is required");
-            }
+
             Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
-                .orElseThrow(() -> new RuntimeException("Variant not found with ID: "
-                     + clientCartVariantRequest.getVariantId()));
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,
+                    clientCartVariantRequest.getVariantId()));
 
             cartVariant.setVariant(variant);
             cartVariant.setCart(cart);
@@ -95,56 +95,12 @@ private Cart mapToEntity(ClientCartRequest request) {
     return cart;
 }
 
-//  private Cart partialUpdate(Cart cart, ClientCartRequest request) {
-//
-//    if(request.getUserId() == null){
-//            throw new RuntimeException("User ID is required");
-//    }
-//
-//    User user = userRepository.findById(request.getUserId())
-//            .orElseThrow(() -> new RuntimeException("User not found with ID: " + request.getUserId()));
-//
-//    cart.setUser(user);
-//    cart.setStatus(request.getStatus());
-//
-//       if (request.getUpdateQuantityType() != null) {
-//        Set<CartVariant> cartVariants = request.getCartItems().stream()
-//            .map(clientCartVariantRequest -> {
-//                if (clientCartVariantRequest.getVariantId() == null) {
-//                    throw new RuntimeException("Variant ID is required");
-//                }
-//
-//                Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
-//                    .orElseThrow(() -> new RuntimeException("Variant not found with ID: "
-//                        + clientCartVariantRequest.getVariantId()));
-//
-//                CartVariant cartVariant = new CartVariant();
-//                cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
-//                cartVariant.setVariant(variant);
-//                cartVariant.setCart(cart);
-//
-//                return cartVariant;
-//            })
-//            .collect(Collectors.toSet());
-//
-//        if (request.getUpdateQuantityType() == UpdateQuantityType.OVERRIDE) {
-//            cart.getCartVariants().clear();
-//            cart.setCartVariants(cartVariants);
-//        } else if (request.getUpdateQuantityType() == UpdateQuantityType.INCREMENTAL) {
-//            cart.setCartVariants(cartVariants);
-//        }
-//    } else {
-//        throw new RuntimeException("Update Quantity Type is required");
-//    }
-//    return cart;
-//}
 
-
-      private Cart partialUpdate(Cart cart, ClientCartRequest request) {
+    private Cart partialUpdate(Cart cart, ClientCartRequest request) {
 
     if (request.getUserId() != null) {
         cart.setUser(userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found")));
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getUserId())));
     }
 
     if (request.getCartItems() != null && !request.getCartItems().isEmpty()) {
@@ -155,8 +111,8 @@ private Cart mapToEntity(ClientCartRequest request) {
 
                 // Find the variant and set it to cartVariant
                 Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
-                    .orElseThrow(() -> new RuntimeException("Variant not found with ID: "
-                         + clientCartVariantRequest.getVariantId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,
+                        clientCartVariantRequest.getVariantId()));
                 cartVariant.setVariant(variant);
 
                 // Set the cart to the cartVariant

@@ -1,15 +1,16 @@
 package com.bookshop.service.product;
 
 
+import com.bookshop.constant.FieldName;
+import com.bookshop.constant.ResourceName;
 import com.bookshop.dto.product.VariantRequest;
 import com.bookshop.dto.product.VariantResponse;
-import com.bookshop.entity.product.Category;
 import com.bookshop.entity.product.Product;
 import com.bookshop.entity.product.Variant;
+import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +69,7 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         Variant variant = new Variant();
         if (request.getProductId() != null) {
             Product product = productRepository.findById(request.getProductId())
-                    .orElseThrow(() -> new EntityNotFoundException("Product with ID " + request.getProductId() + " not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.PRODUCT, FieldName.ID, request.getProductId()));
             variant.setProduct(product);
         }
         variant.setPrice(request.getPrice());
@@ -83,7 +84,7 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         variant.setStatus(request.getStatus());
         if (request.getProductId() != null) {
             Product product = productRepository.findById(request.getProductId())
-                    .orElseThrow(() -> new EntityNotFoundException("Product with ID " + request.getProductId() + " not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.PRODUCT, FieldName.ID, request.getProductId()));
             variant.setProduct(product);
         }
         variant.setUpdatedAt(Instant.now());

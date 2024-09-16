@@ -1,12 +1,14 @@
 package com.bookshop.service.authentication.impl;
 
 import com.bookshop.entity.authentication.RefreshToken;
+import com.bookshop.exception.RefreshTokenException;
 import com.bookshop.repository.authentication.RefreshTokenRepository;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.service.authentication.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -34,7 +36,7 @@ public class RefresherTokenServiceImpl implements RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setUser(userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found")));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         refreshToken.setExpiryDate(Instant.now().plusMillis(jwtRefreshExpirationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 
@@ -45,7 +47,7 @@ public class RefresherTokenServiceImpl implements RefreshTokenService {
     public RefreshToken verifyExpiration(RefreshToken refreshToken) {
         if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("Refresh token was expired. Please make a new signin request!");
+            throw new RefreshTokenException("Refresh token was expired. Please make a new signin request!");
         }
 
         return refreshToken;

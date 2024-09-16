@@ -1,17 +1,20 @@
 package com.bookshop.service.client.impl;
 
 
-
+import com.bookshop.constant.FieldName;
+import com.bookshop.constant.ResourceName;
 import com.bookshop.dto.client.ClientWishRequest;
 import com.bookshop.dto.client.ClientWishResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.general.Wish;
 import com.bookshop.entity.product.Product;
+import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.client.WishRepository;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.service.client.ClientWishService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +33,7 @@ public class ClientWishServiceImpl implements ClientWishService {
     public List<ClientWishResponse> get(String username) {
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(username));
 
         return wishRepository.findById(user.getId()).stream()
                 .map(this::entityToResponse)
@@ -41,7 +44,7 @@ public class ClientWishServiceImpl implements ClientWishService {
     public ClientWishResponse save(ClientWishRequest request) {
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getUserId()));
 
 
         Wish wish = mapToEntity(request);
