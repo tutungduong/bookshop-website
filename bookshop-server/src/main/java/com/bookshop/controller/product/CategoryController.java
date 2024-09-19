@@ -1,6 +1,7 @@
 package com.bookshop.controller.product;
 
 
+import com.bookshop.constant.AppConstants;
 import com.bookshop.dto.product.CategoryRequest;
 import com.bookshop.dto.product.CategoryResponse;
 import com.bookshop.service.product.CategoryService;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 @AllArgsConstructor
+@CrossOrigin(AppConstants.FRONTEND_HOST)
 public class CategoryController {
 
     private final CategoryService categoryService;

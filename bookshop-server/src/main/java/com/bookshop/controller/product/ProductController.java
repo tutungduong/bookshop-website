@@ -1,5 +1,6 @@
 package com.bookshop.controller.product;
 
+import com.bookshop.constant.AppConstants;
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
 import com.bookshop.service.product.ProductService;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 @AllArgsConstructor
+@CrossOrigin(AppConstants.FRONTEND_HOST)
 public class ProductController {
 
         private final ProductService productService;
