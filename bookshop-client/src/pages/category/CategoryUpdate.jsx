@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminHeader from '../../components/AdminHeader/AdminHeader';
 import AdminFooter from '../../components/AdminFooter/AdminFooter';
 import CategoryService from '../../services/category/CategoryService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ManagerPath from '../../constants/ManagerPath';
 
-function CategoryCreate() {
+function CategoryUpdate() {
   const initialCategoryState = {
     name: '',
     description: '',
@@ -14,12 +14,14 @@ function CategoryCreate() {
   };
 
   const [category, setCategory] = useState(initialCategoryState);
+  const [initialCategory, setInitialCategory] = useState(initialCategoryState); // Lưu trạng thái ban đầu của category
 
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    CategoryService.createCategory(category).then((response) => {
+    CategoryService.updateCategory(category, id).then((response) => {
       console.log(response);
       navigate(ManagerPath.CATEGORY);
     }).catch((error) => {
@@ -27,8 +29,17 @@ function CategoryCreate() {
     });
   };
 
+  useEffect(() => {
+    CategoryService.getCategoryById(id).then((response) => {
+      setCategory(response.data);
+      setInitialCategory(response.data); // Lưu giá trị category ban đầu
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [id]);
+
   const handleReset = () => {
-    setCategory(initialCategoryState);
+    setCategory(initialCategory); // Đặt lại giá trị form về giá trị ban đầu
   };
 
   return (
@@ -37,7 +48,7 @@ function CategoryCreate() {
       <section>
         <div className='container'>
           <header className="section-heading py-4 d-flex justify-content-between">
-            <h3 className="section-title">Thêm sản phẩm</h3>
+            <h3 className="section-title">Chỉnh sửa sản phẩm</h3>
           </header>
 
           <main className="add-book-form mb-5">
@@ -71,7 +82,7 @@ function CategoryCreate() {
                   onChange={(e) => setCategory({ ...category, thumbnail: e.target.files[0] })}
                 />
               </div> */}
-              <button type="submit" className="btn btn-primary" onClick={(e) => handleSubmit(e)}>Thêm sản phẩm</button>
+              <button type="submit" className="btn btn-primary" onClick={(e) => handleSubmit(e)}>Chỉnh sửa sản phẩm</button>
               <button type="button" className="btn btn-warning ms-2" onClick={handleReset}>Tẩy trống</button>
               <button type="button" className="btn btn-light ms-2" onClick={() => navigate(ManagerPath.CATEGORY)}>Hủy</button>
             </form>
@@ -83,4 +94,4 @@ function CategoryCreate() {
   );
 }
 
-export default CategoryCreate;
+export default CategoryUpdate;

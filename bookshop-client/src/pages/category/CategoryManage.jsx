@@ -3,6 +3,10 @@ import AdminHeader from '../../components/AdminHeader/AdminHeader';
 import AdminFooter from '../../components/AdminFooter/AdminFooter';
 import AdminNavbar from '../../components/AdminNavbar/AdminNavbar';
 import CategoryService from '../../services/category/CategoryService';
+import ManagerPath from '../../constants/ManagerPath';
+
+import { Link } from 'react-router-dom'
+
 
 function CategoryManage() {
   // Initialize category as an empty array to store a list of categories
@@ -24,6 +28,15 @@ function CategoryManage() {
       });
   }, []);
 
+      const deleteCategory = (id) => {
+        CategoryService.deleteCategory(id).then((response) => {
+            console.log(response)
+            setCategories(categories.filter(category => category.id !== id))
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
   return (
     <>
       <AdminHeader />
@@ -32,9 +45,10 @@ function CategoryManage() {
         <div className="container">
           <header className="section-heading py-4 d-flex justify-content-between">
             <h3 className="section-title">Quản lý sản phẩm</h3>
-            <a className="btn btn-primary" href="#" role="button" style={{ height: 'fit-content' }}>
-              Thêm sản phẩm
-            </a>
+            <Link className="btn btn-primary" to={`${ManagerPath.CATEGORY}/create`} role="button" style={{ height: 'fit-content' }}>
+            Thêm sản phẩm
+          </Link>
+
           </header>
           <main className="table-responsive-xl mb-5">
             <table className="table table-bordered table-striped table-hover align-middle text-center">
@@ -55,9 +69,11 @@ function CategoryManage() {
                     <td>{category.name}</td>
                     <td>{category.thumbnail ? <img src={category.thumbnail} alt={category.name} width="50" /> : 'No Image'}</td>
                     <td className="text-center text-nowrap">
-                      <a className="btn btn-primary me-2" href="#" role="button">Xem</a>
-                      <a className="btn btn-success me-2" href="#" role="button">Sửa</a>
-                      <a className="btn btn-danger" href="#" role="button">Xóa</a>
+                    <Link className="btn btn-primary me-2" to={`${ManagerPath.CATEGORY}`} role="button">Xem</Link>
+                    <Link className="btn btn-success me-2" to={`${ManagerPath.CATEGORY}/${category.id}`} role="button">Sửa</Link>
+                    <Link className="btn btn-danger" role="button"
+                    onClick={() => deleteCategory(category.id)}
+                    >Xóa</Link>
                     </td>
                   </tr>
                 ))}

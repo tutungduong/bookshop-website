@@ -1,13 +1,14 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ListCategoryComponent from './components/ListCategoryComponent';
-import AddCategoryComponent from './components/AddCategoryComponent';
-import ProductList from './components/product/ProductList';
-import ProductCreate from './components/product/ProductCreate';
 import AdminDashboard from './pages/AdminDashboard';
 import Client from './pages/Client';
 import CategoryManage from './pages/category/CategoryManage';
 import CategoryCreate from './pages/category/CategoryCreate';
+import ManagerPath from './constants/ManagerPath';
+import CategoryUpdate from './pages/category/CategoryUpdate';
+import ProductManager from './pages/product/ProductManage';
+import ProductCreate from './pages/product/ProductCreate';
+import ProductUpdate from './pages/product/ProductUpdate';
 
 function App() {
   return (
@@ -15,14 +16,18 @@ function App() {
    <Router>
       <Routes>
         <Route path="/" element={<Client />} />
-        {/* <Route path="/categories" element={<ListCategoryComponent />} />
-        <Route path="/add-categories" element={<AddCategoryComponent />} />
-        <Route path="/update-categories/:id" element={<AddCategoryComponent />} />
-        <Route path="/product" element={<ProductList/>} />
-        <Route path="/add-product" element={<ProductCreate/>} /> */}
         <Route path="/admin" element={<AdminDashboard/>} />
-        <Route path="/admin/categories" element={<CategoryManage />} />
-        <Route path="/admin/categories/create" element={<CategoryCreate />} />
+  
+        <Route path={ManagerPath.CATEGORY} element={<CategoryManage />} />
+        <Route path={`${ManagerPath.CATEGORY}/create`} element={<CategoryCreate />} />
+        <Route path={`${ManagerPath.CATEGORY}/:id`} element={<CategoryUpdate />} />
+
+        <Route path={ManagerPath.PRODUCT} element={<ProductManager/>} />
+        <Route path={`${ManagerPath.PRODUCT}/create`} element={<ProductCreate />} />
+        <Route path={`${ManagerPath.PRODUCT}/:id`} element={<ProductUpdate />} />
+
+        
+
       </Routes>
     </Router>
     </div>

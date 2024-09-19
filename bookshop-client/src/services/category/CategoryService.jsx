@@ -1,6 +1,7 @@
 import axios from 'axios';
+import ResourceURL from '../../constants/ResourceURL';
 
-const CATEGORY_API_BASE_URL = "http://localhost:8085/api/categories";
+const CATEGORY_API_BASE_URL = ResourceURL.CATEGORY;
 
 class CategoryService{
     getCategories(){
