@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-
 public class PromotionServiceImpl  implements PromotionService {
 
     private final PromotionRepository promotionRepository;
