@@ -35,7 +35,7 @@ public class ClientWishServiceImpl implements ClientWishService {
     public ListResponse<ClientWishResponse> getAllWishes(String username, int page, int size, String sort, String filter) {
         Page<Wish> wishes = wishRepository.findAllByUsername(username, sort, filter, PageRequest.of(page - 1, size));
         List<ClientWishResponse> entityResponse = wishes.getContent().stream()
-            .map(this::mapToResponse)
+            .map(this::entityToResponse)
             .collect(Collectors.toList());
         return new ListResponse<>(entityResponse, wishes);
     }
@@ -47,9 +47,9 @@ public class ClientWishServiceImpl implements ClientWishService {
                 .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getUserId()));
 
 
-        Wish wish = mapToEntity(request);
+        Wish wish = requestToEntity(request);
         wish = wishRepository.save(wish);
-        return mapToResponse(wish);
+        return entityToResponse(wish);
 
     }
 
@@ -58,7 +58,7 @@ public class ClientWishServiceImpl implements ClientWishService {
         wishRepository.deleteAllById(ids);
     }
 
-    private ClientWishResponse mapToResponse(Wish wish){
+    private ClientWishResponse entityToResponse(Wish wish){
         ClientWishResponse response = new ClientWishResponse();
         response.setWishId(wish.getId());
         response.setWishCreatedAt(wish.getCreatedAt());
@@ -82,7 +82,7 @@ public class ClientWishServiceImpl implements ClientWishService {
         return response;
     }
 
-    private Wish mapToEntity(ClientWishRequest request){
+    private Wish requestToEntity(ClientWishRequest request){
         Wish wish = new Wish();
 
         User user = userRepository.findById(request.getUserId()).orElseThrow();

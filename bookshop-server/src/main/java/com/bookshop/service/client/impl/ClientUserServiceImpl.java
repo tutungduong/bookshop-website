@@ -23,7 +23,7 @@ public class ClientUserServiceImpl implements ClientUserService {
     @Override
     public UserResponse getUserInfo(String username) {
         return userRepository.findByUsername(username)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
@@ -39,7 +39,7 @@ public class ClientUserServiceImpl implements ClientUserService {
 
         userRepository.save(user);
 
-        return mapToResponse(user);
+        return entityToResponse(user);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ClientUserServiceImpl implements ClientUserService {
 
         userRepository.save(user);
 
-        return mapToResponse(user);
+        return entityToResponse(user);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ClientUserServiceImpl implements ClientUserService {
 
         userRepository.save(user);
 
-        return mapToResponse(user);
+        return entityToResponse(user);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ClientUserServiceImpl implements ClientUserService {
         }
     }
 
-    private UserResponse mapToResponse(User user){
+    private UserResponse entityToResponse(User user){
         UserResponse response = new UserResponse();
         response.setId(user.getId());
         response.setUsername(user.getUsername());

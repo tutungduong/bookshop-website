@@ -38,7 +38,7 @@ public class ClientCartServiceImpl implements ClientCartService {
     public List<ClientCartResponse> get(String username) {
 
         return cartRepository.findByUsername(username).stream()
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +55,7 @@ public class ClientCartServiceImpl implements ClientCartService {
         }
 
         cart = cartRepository.save(cart);
-        return mapToResponse(cart);
+        return entityToResponse(cart);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ClientCartServiceImpl implements ClientCartService {
     return cart;
 }
 
-    private ClientCartResponse mapToResponse(Cart cart) {
+    private ClientCartResponse entityToResponse(Cart cart) {
         ClientCartResponse response = new ClientCartResponse();
         response.setCartId(cart.getId());
 

@@ -41,7 +41,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
         Page<Category> entities = categoryRepository.findAll(sortable.and(filterable).and(searchable), pageable);
         List<CategoryResponse> entityResponse = entities.getContent().stream()
-            .map(this::mapToResponse)
+            .map(this::entityToResponse)
             .collect(Collectors.toList());
      return new ListResponse<>(entityResponse, entities);
     }
@@ -51,15 +51,15 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
     @Override
     public CategoryResponse findById(Long id) {
         return categoryRepository.findById(id)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
     @Override
     public CategoryResponse save(CategoryRequest request) {
-        Category category = mapToEntity(request);
+        Category category = requestToEntity(request);
         category = categoryRepository.save(category);
-        return mapToResponse(category);
+        return entityToResponse(category);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         return categoryRepository.findById(id)
                 .map(existingEntity -> partialUpdate(existingEntity, request))
                 .map(categoryRepository::save)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
@@ -81,7 +81,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         categoryRepository.deleteAllById(ids);
     }
 
-    private Category mapToEntity(CategoryRequest request) {
+    private Category requestToEntity(CategoryRequest request) {
         Category category = new Category();
         category.setName(request.getName());
         category.setDescription(request.getDescription());
@@ -99,7 +99,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         return category;
     }
 
-    private CategoryResponse mapToResponse(Category category) {
+    private CategoryResponse entityToResponse(Category category) {
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());
         response.setName(category.getName());

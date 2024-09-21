@@ -42,7 +42,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
         Page<Product> entities = productRepository.findAll(sortable.and(filterable).and(searchable), pageable);
         List<ProductResponse> entityResponse = entities.getContent().stream()
-            .map(this::mapToResponse)
+            .map(this::entityToResponse)
             .collect(Collectors.toList());
      return new ListResponse<>(entityResponse, entities);
     }
@@ -50,15 +50,15 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
     @Override
     public ProductResponse findById(Long id) {
         return productRepository.findById(id)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
     @Override
     public ProductResponse save(ProductRequest request) {
-        Product product = mapToEntity(request);
+        Product product = requestToEntity(request);
         product = productRepository.save(product);
-        return mapToResponse(product);
+        return entityToResponse(product);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         return productRepository.findById(id)
                 .map(existingEntity -> partialUpdate(existingEntity, request))
                 .map(productRepository::save)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
@@ -81,7 +81,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         productRepository.deleteAllById(ids);
     }
 
-     private Product mapToEntity(ProductRequest request) {
+     private Product requestToEntity(ProductRequest request) {
         Product product = new Product();
         product.setName(request.getName());
         product.setDescription(request.getDescription());
@@ -138,7 +138,7 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         return product;
     }
 
-    private ProductResponse mapToResponse(Product product) {
+    private ProductResponse entityToResponse(Product product) {
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
         response.setCreatedAt(product.getCreatedAt());

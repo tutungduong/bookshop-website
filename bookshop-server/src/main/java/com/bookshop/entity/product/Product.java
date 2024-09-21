@@ -2,6 +2,7 @@ package com.bookshop.entity.product;
 
 import com.bookshop.entity.BaseEntity;
 import com.bookshop.entity.general.Wish;
+import com.bookshop.entity.promotion.Promotion;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -12,7 +13,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -61,5 +64,7 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     private List<Wish> wishes = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "products")
+    private Set<Promotion> promotions = new HashSet<>();
 
 }

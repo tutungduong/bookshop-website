@@ -46,7 +46,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
         Page<Order> entities = orderRepository.findAll(sortable.and(filterable).and(searchable), pageable);
         List<OrderResponse> entityResponse = entities.getContent().stream()
-            .map(this::mapToResponse)
+            .map(this::entityToResponse)
             .collect(Collectors.toList());
      return new ListResponse<>(entityResponse, entities);
     }
@@ -54,15 +54,15 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
     @Override
     public OrderResponse findById(Long id) {
         return orderRepository.findById(id)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
     @Override
     public OrderResponse save(OrderRequest request) {
-        Order order = mapToEntity(request);
+        Order order = requestToEntity(request);
         order = orderRepository.save(order);
-        return mapToResponse(order);
+        return entityToResponse(order);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         return orderRepository.findById(id)
                 .map(existingEntity -> partialUpdate(existingEntity, request))
                 .map(orderRepository::save)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
@@ -84,7 +84,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         orderRepository.deleteAllById(ids);
     }
 
-    private Order mapToEntity(OrderRequest request) {
+    private Order requestToEntity(OrderRequest request) {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -162,7 +162,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
     return order;
     }
 
-    private OrderResponse mapToResponse(Order order) {
+    private OrderResponse entityToResponse(Order order) {
 
         OrderResponse response = new OrderResponse();
 

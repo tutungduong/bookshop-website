@@ -41,7 +41,7 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
         Page<Variant> entities = variantRepository.findAll(sortable.and(filterable).and(searchable), pageable);
         List<VariantResponse> entityResponse = entities.getContent().stream()
-            .map(this::mapToResponse)
+            .map(this::entityToResponse)
             .collect(Collectors.toList());
      return new ListResponse<>(entityResponse, entities);
     }
@@ -49,15 +49,15 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
     @Override
     public VariantResponse findById(Long id) {
         return variantRepository.findById(id)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
     @Override
     public VariantResponse save(VariantRequest request) {
-       Variant variant = mapToEntity(request);
+       Variant variant = requestToEntity(request);
        variant = variantRepository.save(variant);
-         return mapToResponse(variant);
+         return entityToResponse(variant);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         return variantRepository.findById(aLong)
                 .map(existingEntity -> partialUpdate(existingEntity, request))
                 .map(variantRepository::save)
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .orElse(null);
     }
 
@@ -79,7 +79,7 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         variantRepository.deleteAllById(ids);
     }
 
-    private Variant mapToEntity(VariantRequest request) {
+    private Variant requestToEntity(VariantRequest request) {
         Variant variant = new Variant();
         if (request.getProductId() != null) {
             Product product = productRepository.findById(request.getProductId())
@@ -105,7 +105,7 @@ public class VariantService implements CrudService<Long, VariantRequest, Variant
         return variant;
     }
 
-    private VariantResponse mapToResponse(Variant Variant) {
+    private VariantResponse entityToResponse(Variant Variant) {
         VariantResponse response = new VariantResponse();
         response.setId(Variant.getId());
         response.setCreatedAt(Variant.getCreatedAt());
