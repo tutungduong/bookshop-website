@@ -1,8 +1,9 @@
 package com.bookshop.service.order;
 
+import com.bookshop.constant.SearchFields;
+import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.order.OrderRequest;
 import com.bookshop.dto.order.OrderResponse;
-import com.bookshop.dto.order.OrderVariantRequest;
 import com.bookshop.dto.order.OrderVariantResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.order.Order;
@@ -12,10 +13,15 @@ import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.order.OrderRepository;
 import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
+import com.bookshop.utils.SearchUtils;
+import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import com.bookshop.dto.authentication.UserResponse;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,10 +39,16 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
     private final VariantRepository variantRepository;
 
     @Override
-    public List<OrderResponse> findAll() {
-        return orderRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+     public ListResponse<OrderResponse> findAll(int page, int size, String sort, String filter, String search, boolean all) {
+        Specification<Order> sortable = RSQLJPASupport.toSort(sort);
+        Specification<Order> filterable = RSQLJPASupport.toSpecification(filter);
+        Specification<Order> searchable = SearchUtils.parse(search, SearchFields.ORDER);
+        Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+        Page<Order> entities = orderRepository.findAll(sortable.and(filterable).and(searchable), pageable);
+        List<OrderResponse> entityResponse = entities.getContent().stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
+     return new ListResponse<>(entityResponse, entities);
     }
 
     @Override

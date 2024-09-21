@@ -3,6 +3,8 @@ package com.bookshop.service.product;
 
 import com.bookshop.constant.FieldName;
 import com.bookshop.constant.ResourceName;
+import com.bookshop.constant.SearchFields;
+import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
 import com.bookshop.entity.product.Category;
@@ -12,7 +14,13 @@ import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.product.CategoryRepository;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.service.CrudService;
+import com.bookshop.utils.SearchUtils;
+import io.github.perplexhub.rsql.RSQLJPASupport;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -26,11 +34,17 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    @Override
-    public List<ProductResponse> findAll() {
-        return productRepository.findAll().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+     @Override
+     public ListResponse<ProductResponse> findAll(int page, int size, String sort, String filter, String search, boolean all) {
+        Specification<Product> sortable = RSQLJPASupport.toSort(sort);
+        Specification<Product> filterable = RSQLJPASupport.toSpecification(filter);
+        Specification<Product> searchable = SearchUtils.parse(search, SearchFields.PRODUCT);
+        Pageable pageable = all ? Pageable.unpaged() : PageRequest.of(page - 1, size);
+        Page<Product> entities = productRepository.findAll(sortable.and(filterable).and(searchable), pageable);
+        List<ProductResponse> entityResponse = entities.getContent().stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
+     return new ListResponse<>(entityResponse, entities);
     }
 
     @Override

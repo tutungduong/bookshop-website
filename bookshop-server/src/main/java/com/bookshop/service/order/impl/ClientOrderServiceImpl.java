@@ -1,6 +1,7 @@
 package com.bookshop.service.order.impl;
 
 
+import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.client.*;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cart.Cart;
@@ -13,6 +14,8 @@ import com.bookshop.repository.order.OrderRepository;
 import com.bookshop.service.order.ClientOrderService;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,17 @@ public class ClientOrderServiceImpl implements ClientOrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
+
+
+    @Override
+    public ListResponse<ClientSimpleOrderResponse> getAllOrders(String username, int page, int size, String sort, String filter) {
+        Page<Order> orders = orderRepository.findAllByUsername(username, sort, filter, PageRequest.of(page - 1, size));
+        List<ClientSimpleOrderResponse> entityResponse = orders.getContent().stream()
+                .map(this::entityToResponse)
+                .collect(Collectors.toList());
+        return new ListResponse<>(entityResponse, orders);
+    }
+
 
 
     @Override
@@ -121,14 +135,6 @@ public class ClientOrderServiceImpl implements ClientOrderService {
        cartRepository.save(cart);
 
        return response;
-    }
-
-    @Override
-    public List<ClientSimpleOrderResponse> get(String username) {
-
-        return orderRepository.findByUsername(username).stream()
-                .map(this::entityToResponse)
-                .collect(Collectors.toList());
     }
 
     @Override
