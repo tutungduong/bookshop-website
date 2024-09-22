@@ -1,15 +1,22 @@
 package com.bookshop.service.order;
 
+import com.bookshop.constant.AppConstants;
+import com.bookshop.constant.FieldName;
+import com.bookshop.constant.ResourceName;
 import com.bookshop.constant.SearchFields;
 import com.bookshop.dto.ListResponse;
+import com.bookshop.dto.order.OrderCancellationReasonResponse;
 import com.bookshop.dto.order.OrderRequest;
 import com.bookshop.dto.order.OrderResponse;
 import com.bookshop.dto.order.OrderVariantResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.order.Order;
+import com.bookshop.entity.order.OrderCancellationReason;
 import com.bookshop.entity.order.OrderVariant;
 import com.bookshop.entity.product.Variant;
+import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.authentication.UserRepository;
+import com.bookshop.repository.order.OrderCancellationReasonRepository;
 import com.bookshop.repository.order.OrderRepository;
 import com.bookshop.repository.product.VariantRepository;
 import com.bookshop.service.CrudService;
@@ -25,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +43,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-//    private final OrderCancellationReasonRepository orderCancellationReasonRepository;
+    private final OrderCancellationReasonRepository orderCancellationReasonRepository;
     private final VariantRepository variantRepository;
 
     @Override
@@ -87,20 +95,27 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
     private Order requestToEntity(OrderRequest request) {
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID,request.getUserId()));
 
-        Variant variant = variantRepository.findById(request.getVariantId()).orElseThrow(null);
+        Variant variant = variantRepository.findById(request.getVariantId())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,request.getVariantId()));
 
-//        OrderCancellationReason orderCancellationReason = orderCancellationReasonRepository.findById(request.getOrderCancellationReasonId())
-//                .orElse(null);
-
+        OrderCancellationReason orderCancellationReason = orderCancellationReasonRepository.findById(request.getOrderCancellationReasonId())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.ORDER_CANCELLATION_REASON, FieldName.ID,request.getOrderCancellationReasonId()));
 
         Order order = new Order();
+
         order.setCode(RandomString.make(12).toUpperCase());
-        order.setUser(user);
         order.setStatus(request.getStatus());
-//        order.setOrderCancellationReason(orderCancellationReason);
-//        order.setNote(request.getNote());
+        order.setToName(request.getToName());
+        order.setToPhone(request.getToPhone());
+        order.setToAddress(request.getToAddress());
+
+        if(request.getOrderCancellationReasonId() != null){
+            order.setOrderCancellationReason(orderCancellationReason);
+        }
+        order.setNote(request.getNote());
+        order.setUser(user);
 
         order.setPaymentMethodType(request.getPaymentMethodType());
         order.setPaymentStatus(request.getPaymentStatus());
@@ -117,7 +132,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
                 .mapToDouble(orderVariant -> orderVariant.getAmount().doubleValue())
                 .sum());
 
-         BigDecimal tax = BigDecimal.valueOf(0.1);
+         BigDecimal tax = BigDecimal.valueOf(AppConstants.DEFAULT_TAX);
          BigDecimal totalPay = totalAmount
                 .add(totalAmount.multiply(tax).setScale(0, RoundingMode.HALF_UP));
 
@@ -130,34 +145,50 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
 
 
     private Order partialUpdate(Order order, OrderRequest request) {
-         User user = userRepository.findById(request.getUserId()).orElse(null);
-    Variant variant = variantRepository.findById(request.getVariantId()).orElse(null);
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID,request.getUserId()));
 
-    order.setStatus(request.getStatus());
-    order.setUser(user);
+        Variant variant = variantRepository.findById(request.getVariantId())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,request.getVariantId()));
 
-    order.setOrderVariants(Set.of(new OrderVariant()
+        OrderCancellationReason orderCancellationReason = orderCancellationReasonRepository.findById(request.getOrderCancellationReasonId())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.ORDER_CANCELLATION_REASON, FieldName.ID,request.getOrderCancellationReasonId()));
+
+        order.setCode(RandomString.make(12).toUpperCase());
+        order.setStatus(request.getStatus());
+        order.setToName(request.getToName());
+        order.setToPhone(request.getToPhone());
+        order.setToAddress(request.getToAddress());
+
+        if(request.getOrderCancellationReasonId() != null){
+            order.setOrderCancellationReason(orderCancellationReason);
+            order.setNote(request.getNote());
+        }
+        order.setUser(user);
+
+        order.setPaymentMethodType(request.getPaymentMethodType());
+        order.setPaymentStatus(request.getPaymentStatus());
+
+        order.setOrderVariants(Set.of(new OrderVariant()
                 .setOrder(order)
                 .setVariant(variant)
                 .setPrice(BigDecimal.valueOf(variant.getPrice()))
                 .setQuantity(request.getQuantity())
                 .setAmount(BigDecimal.valueOf(variant.getPrice()).multiply(BigDecimal.valueOf(request.getQuantity())))
-    ));
+        ));
 
-    order.setPaymentMethodType(request.getPaymentMethodType());
-    order.setPaymentStatus(request.getPaymentStatus());
+        BigDecimal totalAmount = BigDecimal.valueOf(order.getOrderVariants().stream()
+                .mapToDouble(orderVariant -> orderVariant.getAmount().doubleValue())
+                .sum());
 
-    BigDecimal totalAmount = BigDecimal.valueOf(order.getOrderVariants().stream()
-            .mapToDouble(orderVariant -> orderVariant.getAmount().doubleValue())
-            .sum());
+         BigDecimal tax = BigDecimal.valueOf(AppConstants.DEFAULT_TAX);
+         BigDecimal totalPay = totalAmount
+                .add(totalAmount.multiply(tax).setScale(0, RoundingMode.HALF_UP));
 
-    BigDecimal tax = BigDecimal.valueOf(0.1);
-    BigDecimal totalPay = totalAmount
-            .add(totalAmount.multiply(tax).setScale(0, RoundingMode.HALF_UP));
-
-    order.setTotalAmount(totalAmount);
-    order.setTax(tax);
-    order.setTotalPay(totalPay);
+         order.setTotalAmount(totalAmount);
+         order.setTax(tax);
+         order.setTotalPay(totalPay);
+         order.setUpdatedAt(Instant.now());
 
     return order;
     }
@@ -170,8 +201,18 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
         response.setCreatedAt(order.getCreatedAt());
         response.setUpdatedAt(order.getUpdatedAt());
         response.setCode(order.getCode());
+
         response.setStatus(order.getStatus());
-//        response.setNote(order.getNote());
+
+        OrderCancellationReasonResponse orderCancellationReasonResponse = new OrderCancellationReasonResponse();
+        orderCancellationReasonResponse.setId(order.getOrderCancellationReason().getId());
+        orderCancellationReasonResponse.setCreatedAt(order.getOrderCancellationReason().getCreatedAt());
+        orderCancellationReasonResponse.setUpdatedAt(order.getOrderCancellationReason().getUpdatedAt());
+        orderCancellationReasonResponse.setName(order.getOrderCancellationReason().getName());
+        orderCancellationReasonResponse.setNote(order.getOrderCancellationReason().getNote());
+        orderCancellationReasonResponse.setStatus(order.getOrderCancellationReason().getStatus());
+
+        response.setNote(order.getNote());
 
         OrderResponse.UserResponse userResponse = new OrderResponse.UserResponse();
         userResponse.setId(order.getUser().getId());
@@ -209,6 +250,7 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
                 productResponse.setAuthor(orderVariant.getVariant().getProduct().getAuthor());
                 productResponse.setCreatedAt(orderVariant.getVariant().getProduct().getCreatedAt());
                 productResponse.setUpdatedAt(orderVariant.getVariant().getProduct().getUpdatedAt());
+                productResponse.setSlug(orderVariant.getVariant().getProduct().getSlug());
 
                 variantResponse.setProduct(productResponse);
                 orderVariantResponse.setVariant(variantResponse);
