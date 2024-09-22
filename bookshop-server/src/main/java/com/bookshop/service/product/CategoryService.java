@@ -27,12 +27,6 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
 
     private final CategoryRepository categoryRepository;
 
-//   @Override
-//    public List<CategoryResponse> findAll() {
-//        return categoryRepository.findAll().stream()
-//                .map(this::mapToResponse)
-//                .collect(Collectors.toList());
-//    }
      @Override
      public ListResponse<CategoryResponse> findAll(int page, int size, String sort, String filter, String search, boolean all) {
         Specification<Category> sortable = RSQLJPASupport.toSort(sort);
@@ -45,7 +39,6 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
             .collect(Collectors.toList());
      return new ListResponse<>(entityResponse, entities);
     }
-
 
 
     @Override
@@ -84,6 +77,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
     private Category requestToEntity(CategoryRequest request) {
         Category category = new Category();
         category.setName(request.getName());
+        category.setSlug(request.getSlug());
         category.setDescription(request.getDescription());
         category.setThumbnail(request.getThumbnail());
         category.setStatus(request.getStatus());
@@ -92,6 +86,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
 
     private Category partialUpdate(Category category, CategoryRequest request) {
         category.setName(request.getName());
+        category.setSlug(request.getSlug());
         category.setDescription(request.getDescription());
         category.setThumbnail(request.getThumbnail());
         category.setStatus(request.getStatus());
@@ -103,6 +98,7 @@ public class CategoryService implements CrudService<Long, CategoryRequest, Categ
         CategoryResponse response = new CategoryResponse();
         response.setId(category.getId());
         response.setName(category.getName());
+        response.setSlug(category.getSlug());
         response.setDescription(category.getDescription());
         response.setStatus(category.getStatus());
         response.setThumbnail(category.getThumbnail());

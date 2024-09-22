@@ -1,6 +1,7 @@
 package com.bookshop.dto.product;
 
 
+import com.bookshop.dto.general.ImageResponse;
 import jakarta.annotation.Nullable;
 import lombok.Data;
 
@@ -11,15 +12,15 @@ import java.util.List;
 public class ProductResponse {
     private Long id;
     private String name;
+    private String slug;
+    @Nullable
+    private String shortDescription;
     @Nullable
     private String description;
-    @Nullable
+    private List<ImageResponse> images;
     private String author;
-    @Nullable
     private String publisher;
-    @Nullable
     private Integer publishedYear;
-    @Nullable
     private Integer pages;
     private Integer status;
     @Nullable
@@ -32,11 +33,15 @@ public class ProductResponse {
     @Data
     public static class CategoryResponse{
         private Long id;
-        private String name;
-        private String description;
-        private Integer status;
         private Instant createdAt;
         private Instant updatedAt;
+        private String name;
+        private String slug;
+        @Nullable
+        private String description;
+        @Nullable
+        private String thumbnail;
+        private Integer status;
     }
 
     @Data

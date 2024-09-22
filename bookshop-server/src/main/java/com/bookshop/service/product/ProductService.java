@@ -5,8 +5,10 @@ import com.bookshop.constant.FieldName;
 import com.bookshop.constant.ResourceName;
 import com.bookshop.constant.SearchFields;
 import com.bookshop.dto.ListResponse;
+import com.bookshop.dto.general.ImageResponse;
 import com.bookshop.dto.product.ProductRequest;
 import com.bookshop.dto.product.ProductResponse;
+import com.bookshop.entity.general.Image;
 import com.bookshop.entity.product.Category;
 import com.bookshop.entity.product.Product;
 import com.bookshop.entity.product.Variant;
@@ -83,67 +85,105 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
 
      private Product requestToEntity(ProductRequest request) {
         Product product = new Product();
+
         product.setName(request.getName());
+        product.setSlug(request.getSlug());
+        product.setShortDescription(request.getShortDescription());
         product.setDescription(request.getDescription());
         product.setAuthor(request.getAuthor());
         product.setPublisher(request.getPublisher());
         product.setPublishedYear(request.getPublishedYear());
         product.setPages(request.getPages());
         product.setStatus(request.getStatus());
-        // Update category only if categoryId from request is not null
-        if (request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId())
+
+        Category category = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CATEGORY, FieldName.ID, request.getCategoryId()));
-            product.setCategory(category);
-        }
+        product.setCategory(category);
+
         product.setVariants(request.getVariants().stream()
-                .map(variantRequest -> {
-                    Variant variant = new Variant();
-                      variant.setProduct(product);
-                      variant.setPrice(variantRequest.getPrice());
-                      variant.setDiscount(variantRequest.getDiscount());
-                      variant.setStatus(variantRequest.getStatus());
-                      return variant;
+        .map(variantRequest -> {
+            Variant variant = new Variant();
+            variant.setProduct(product);
+            variant.setPrice(variantRequest.getPrice());
+            variant.setDiscount(variantRequest.getDiscount());
+            variant.setStatus(variantRequest.getStatus());
+            return variant;
+        })
+        .collect(Collectors.toList()));
+
+        product.setImages(request.getImages().stream()
+                .map(imageRequest -> {
+                    Image image = new Image();
+                    image.setProduct(product);
+                    image.setName(imageRequest.getName());
+                    image.setPath(imageRequest.getPath());
+                    image.setContentType(imageRequest.getContentType());
+                    image.setSize(imageRequest.getSize());
+                    image.setGroup(imageRequest.getGroup());
+                    image.setIsThumbnail(imageRequest.getIsThumbnail());
+                    image.setIsEliminated(imageRequest.getIsEliminated());
+                    return image;
                 })
-         .collect(Collectors.toList()));
+                .collect(Collectors.toList()));
+
         return product;
     }
 
 
     private Product partialUpdate(Product product, ProductRequest request) {
+
         product.setName(request.getName());
+        product.setSlug(request.getSlug());
+        product.setShortDescription(request.getShortDescription());
         product.setDescription(request.getDescription());
         product.setAuthor(request.getAuthor());
         product.setPublisher(request.getPublisher());
         product.setPublishedYear(request.getPublishedYear());
         product.setPages(request.getPages());
         product.setStatus(request.getStatus());
-        // Update category only if categoryId from request is not null
-        if (request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId())
+
+        Category category = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CATEGORY, FieldName.ID, request.getCategoryId()));
-            product.setCategory(category);
-        }
+        product.setCategory(category);
+
         product.setVariants(request.getVariants().stream()
-                .map(variantRequest -> {
-                    Variant variant = new Variant();
-                    variant.setProduct(product);
-                    variant.setPrice(variantRequest.getPrice());
-                    variant.setDiscount(variantRequest.getDiscount());
-                    variant.setStatus(variantRequest.getStatus());
-                    return variant;
+        .map(variantRequest -> {
+            Variant variant = new Variant();
+            variant.setProduct(product);
+            variant.setPrice(variantRequest.getPrice());
+            variant.setDiscount(variantRequest.getDiscount());
+            variant.setStatus(variantRequest.getStatus());
+            return variant;
+        })
+        .collect(Collectors.toList()));
+
+        product.setImages(request.getImages().stream()
+                .map(imageRequest -> {
+                    Image image = new Image();
+                    image.setProduct(product);
+                    image.setName(imageRequest.getName());
+                    image.setPath(imageRequest.getPath());
+                    image.setContentType(imageRequest.getContentType());
+                    image.setSize(imageRequest.getSize());
+                    image.setGroup(imageRequest.getGroup());
+                    image.setIsThumbnail(imageRequest.getIsThumbnail());
+                    image.setIsEliminated(imageRequest.getIsEliminated());
+                    return image;
                 })
                 .collect(Collectors.toList()));
+
         product.setUpdatedAt(Instant.now());
+
         return product;
     }
 
     private ProductResponse entityToResponse(Product product) {
         ProductResponse response = new ProductResponse();
+
         response.setId(product.getId());
-        response.setCreatedAt(product.getCreatedAt());
-        response.setUpdatedAt(product.getUpdatedAt());
+        response.setSlug(product.getSlug());
         response.setName(product.getName());
+        response.setShortDescription(product.getShortDescription());
         response.setDescription(product.getDescription());
         response.setAuthor(product.getAuthor());
         response.setPublisher(product.getPublisher());
@@ -154,9 +194,11 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
         ProductResponse.CategoryResponse  categoryResponse = new ProductResponse.CategoryResponse();
         categoryResponse.setId(product.getCategory().getId());
         categoryResponse.setName(product.getCategory().getName());
+        categoryResponse.setSlug(product.getCategory().getSlug());
         categoryResponse.setDescription(product.getCategory().getDescription());
         categoryResponse.setCreatedAt(product.getCategory().getCreatedAt());
         categoryResponse.setUpdatedAt(product.getCategory().getUpdatedAt());
+        categoryResponse.setThumbnail(product.getCategory().getThumbnail());
         categoryResponse.setStatus(product.getCategory().getStatus());
         response.setCategory(categoryResponse);
 
@@ -172,6 +214,26 @@ public class ProductService implements CrudService<Long, ProductRequest, Product
                     return variantResponse;
                 })
                 .collect(Collectors.toList()));
+
+        response.setImages(product.getImages().stream()
+                .map(image -> {
+                    ImageResponse imageResponse = new ImageResponse();
+                    imageResponse.setId(image.getId());
+                    imageResponse.setName(image.getName());
+                    imageResponse.setPath(image.getPath());
+                    imageResponse.setContentType(image.getContentType());
+                    imageResponse.setSize(image.getSize());
+                    imageResponse.setGroup(image.getGroup());
+                    imageResponse.setIsThumbnail(image.getIsThumbnail());
+                    imageResponse.setIsEliminated(image.getIsEliminated());
+                    imageResponse.setCreatedAt(image.getCreatedAt());
+                    imageResponse.setUpdatedAt(image.getUpdatedAt());
+                    return imageResponse;
+                })
+                .collect(Collectors.toList()));
+
+        response.setCreatedAt(product.getCreatedAt());
+        response.setUpdatedAt(product.getUpdatedAt());
         return response;
     }
 }
