@@ -3,13 +3,15 @@ package com.bookshop.service.client.impl;
 
 import com.bookshop.constant.FieldName;
 import com.bookshop.constant.ResourceName;
-import com.bookshop.dto.client.*;
+import com.bookshop.dto.client.ClientCartRequest;
+import com.bookshop.dto.client.ClientCartResponse;
+import com.bookshop.dto.client.ClientCartVariantKeyRequest;
+import com.bookshop.dto.client.ClientCartVariantResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cart.Cart;
 import com.bookshop.entity.cart.CartVariant;
 import com.bookshop.entity.cart.CartVariantKey;
 import com.bookshop.entity.product.Variant;
-import com.bookshop.entity.promotion.Promotion;
 import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.cart.CartRepository;
@@ -50,7 +52,7 @@ public class ClientCartServiceImpl implements ClientCartService {
         if (request.getCartId() != null) {
             cartBeforeSave = cartRepository.findById(request.getCartId())
                     .map(existingEntity -> partialUpdate(existingEntity, request))
-                    .orElseGet(() -> mapToEntity(request));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CART, FieldName.ID, request.getCartId()));
         } else {
             cartBeforeSave = mapToEntity(request);
         }
@@ -76,7 +78,6 @@ public class ClientCartServiceImpl implements ClientCartService {
 
     cart.setUser(user);
     cart.setStatus(request.getStatus());
-
 
     Set<CartVariant> cartVariants = request.getCartItems().stream()
             .map(clientCartVariantRequest -> {
@@ -118,6 +119,7 @@ public class ClientCartServiceImpl implements ClientCartService {
                     cartVariant.setCart(cart);
                     return cartVariant;
                 }).collect(Collectors.toSet()));
+
         cart.setUpdatedAt(Instant.now());
 
         return cart;
@@ -146,20 +148,6 @@ public class ClientCartServiceImpl implements ClientCartService {
                     clientProductResponse.setProductName(cartVariant.getVariant().getProduct().getName());
                     clientProductResponse.setProductSlug(cartVariant.getVariant().getProduct().getSlug());
                     clientProductResponse.setProductAuthor(cartVariant.getVariant().getProduct().getAuthor());
-                    clientProductResponse.setProductThumbnail(cartVariant.getVariant().getProduct().getImages().stream()
-                            .filter(image -> image.getIsThumbnail())
-                            .findFirst()
-                            .map(image -> image.getPath())
-                            .orElse(null));
-
-                    Promotion promotion = promotionRepository.findById(clientProductResponse.getProductPromotion().getPromotionId())
-                                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.PROMOTION, FieldName.ID, clientProductResponse.getProductPromotion().getPromotionId()));
-
-                    ClientPromotionResponse clientPromotionResponse = new ClientPromotionResponse();
-                    clientPromotionResponse.setPromotionId(promotion.getId());
-                    clientPromotionResponse.setPromotionPercent(promotion.getPercent());
-
-                    clientProductResponse.setProductPromotion(clientPromotionResponse);
 
                     clientVariantResponse.setVariantProduct(clientProductResponse);
                     clientCartVariantResponse.setCartItemVariant(clientVariantResponse);

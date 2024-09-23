@@ -9,11 +9,9 @@ import com.bookshop.dto.client.*;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cart.Cart;
 import com.bookshop.entity.cashbook.PaymentMethodType;
-import com.bookshop.entity.general.Image;
 import com.bookshop.entity.order.Order;
 import com.bookshop.entity.order.OrderVariant;
 import com.bookshop.entity.promotion.Promotion;
-import com.bookshop.entity.review.Review;
 import com.bookshop.exception.ResourceNotFoundException;
 import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.cart.CartRepository;
@@ -205,17 +203,17 @@ public class ClientOrderServiceImpl implements ClientOrderService {
                     clientProductResponse.setProductName(orderVariant.getVariant().getProduct().getName());
                     clientProductResponse.setProductSlug(orderVariant.getVariant().getProduct().getSlug());
 
-
-                    clientProductResponse.setProductThumbnail(orderVariant.getVariant().getProduct().getImages().stream()
-                        .filter(Image::getIsThumbnail)
-                        .findFirst()
-                        .map(Image::getPath)
-                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.IMAGE, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId())));
-
-                    Review review = reviewRepository.findById(orderVariant.getVariant().getProduct().getId())
-                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.REVIEW, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId()));
-
-                    clientProductResponse.setProductIsReviewed(review != null);
+//
+//                    clientProductResponse.setProductThumbnail(orderVariant.getVariant().getProduct().getImages().stream()
+//                        .filter(Image::getIsThumbnail)
+//                        .findFirst()
+//                        .map(Image::getPath)
+//                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.IMAGE, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId())));
+//
+//                    Review review = reviewRepository.findById(orderVariant.getVariant().getProduct().getId())
+//                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.REVIEW, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId()));
+//
+//                    clientProductResponse.setProductIsReviewed(review != null);
 
                     clientVariantResponse.setVariantProduct(clientProductResponse);
                     clientOrderVariantResponse.setOrderItemVariant(clientVariantResponse);
@@ -260,16 +258,16 @@ public class ClientOrderServiceImpl implements ClientOrderService {
                     clientProductResponse.setProductSlug(orderVariant.getVariant().getProduct().getSlug());
 
 
-                    clientProductResponse.setProductThumbnail(orderVariant.getVariant().getProduct().getImages().stream()
-                        .filter(Image::getIsThumbnail)
-                        .findFirst()
-                        .map(Image::getPath)
-                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.IMAGE, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId())));
-
-                    Review review = reviewRepository.findById(orderVariant.getVariant().getProduct().getId())
-                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.REVIEW, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId()));
-
-                    clientProductResponse.setProductIsReviewed(review != null);
+//                    clientProductResponse.setProductThumbnail(orderVariant.getVariant().getProduct().getImages().stream()
+//                        .filter(Image::getIsThumbnail)
+//                        .findFirst()
+//                        .map(Image::getPath)
+//                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.IMAGE, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId())));
+//
+//                    Review review = reviewRepository.findById(orderVariant.getVariant().getProduct().getId())
+//                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.REVIEW, FieldName.PRODUCT_ID, orderVariant.getVariant().getProduct().getId()));
+//
+//                    clientProductResponse.setProductIsReviewed(review != null);
 
                     clientVariantResponse.setVariantProduct(clientProductResponse);
                     clientOrderVariantResponse.setOrderItemVariant(clientVariantResponse);

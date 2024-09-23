@@ -162,8 +162,9 @@ public class OrderService implements CrudService<Long, OrderRequest, OrderRespon
 
         if(request.getOrderCancellationReasonId() != null){
             order.setOrderCancellationReason(orderCancellationReason);
-            order.setNote(request.getNote());
         }
+
+        order.setNote(request.getNote());
         order.setUser(user);
 
         order.setPaymentMethodType(request.getPaymentMethodType());
