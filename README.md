@@ -3,8 +3,8 @@
 
 <div align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Spring_Boot.svg" alt="Spring Boot Logo" width="100" height="auto" />
-  <h3><b>Book Store</b></h3>
-  <p>An online platform to explore, discover, and purchase your favorite books.</p>
+  <h3><b>Book Store API</b></h3>
+  <p>This project focuses on building a RESTful API that serves as the backend for a bookstore application. The API provides endpoints to manage books, categories, customers, orders, and payments, supporting key functionalities such as searching, filtering, and managing inventory. It is designed to be scalable, secure, and easy to integrate with any frontend client.</p>
 </div>
 
 ---
@@ -23,10 +23,8 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Class Diagram](#class-diagram)
 - [Technologies Used](#technologies-used)
 - [Modules](#modules)
-- [Features](#features)
 - [Installation & Setup](#installation--setup)
 - [Docker Setup](#docker-setup-optional)
 - [Contributing](#contributing)
@@ -36,43 +34,47 @@
 
 ## Introduction
 
-The **Book Store** project is an online platform for book enthusiasts, offering an intuitive way to browse, discover, and purchase books across various categories. The platform features personalized recommendations, a secure shopping cart system, and streamlined checkout processes. Built using modern technologies, this project ensures a responsive, scalable, and secure service for users.
-
-## Class Diagram
-
-The class diagram below represents the core entities of the **Book Store** system, including `User`, `Product`, `Order`, `Cart`, and `Payment`.
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/3e76e7f8-2683-401c-ba19-9028ced82d47" alt="Class Diagram" width="600" />
-  <br>
-  <em>Class Diagram</em>
-</p>
-
-| Authentication | Product | Cart |
-| -------------- | ------- | ---- |
-| <img src="https://github.com/user-attachments/assets/1be0b1dc-9979-494b-b2d1-dad9e5236245" alt="Authentication Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/fd1aee9a-e58e-44a8-b005-14b5d3bb50bc" alt="Product Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/a0988dd5-6ff7-43b2-8c9b-e19ebd765b86" alt="Cart Class Diagram" width="200" /> |
-
-| Order          | Cashbook | General |
-| -------------- | -------- | -------------- |
-| <img src="https://github.com/user-attachments/assets/54fe29e8-7799-4367-8e26-06fa1d3237fc" alt="Order Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/e5d5f11a-e6b4-4f21-86cd-f9853bcb71b7" alt="Cashbook Class Diagram" width="200" /> | <img src="https://github.com/user-attachments/assets/6a31e449-cfe6-460a-b14a-7ba2c8b3454e" alt="General Class Diagram" width="200" /> |
+The **Bookstore RESTful API** is a backend project designed for an online bookstore management application. This API provides essential features for managing book categories, customers, orders, payments, and more. Built with a RESTful architecture, the API ensures scalability, security, and ease of integration with various frontend applications. This project simplifies the development of online book selling applications, supporting efficient searching, filtering, inventory management, and payment processing.
 
 ## Technologies Used
 
 The project uses a variety of modern technologies to ensure scalability, efficiency, and security:
 
-- **Backend**: Spring Boot, Spring Data JPA, Spring Security
-- **Frontend**: Bootstrap, CSS, JavaScript
-- **Database**: MySQL
-- **Build Tool**: Maven
+- **Backend**: Java, Spring(Boot, MVC, JPA, Security, Mail).
+- **Frontend**: ReactJS, Bootstrap (planned implementation).
+- **Database**: MySQL(with Hibernate).
+- **Build Tool**: Maven, IntelliJ IDEA, Docker (option).
 <!-- - **Others**: Lombok, Docker for containerization -->
 
 ## Modules
 
-1. **User Management**: Handles registration, login, and role-based authorization (JWT).
-2. **Book Management**: Admins can manage books (CRUD), while users can browse and search books.
-3. **Shopping Cart**: Users can add/remove items to/from their cart and checkout.
-4. **Order Management**: Processes orders, payments, and maintains order history.
-5. **Wishlist**: Users can add books to their wishlist for future purchases.
+### **Admin Module**
+
+The Admin Module offers a comprehensive set of tools for managing the bookstore's operations efficiently:
+
+- **Order Management**: View, update, and delete orders to maintain accurate records, ensuring smooth processing and fulfillment.
+- **Product Management**: Create, update, and delete product listings and variants, while effectively managing inventory levels.
+- **Category Management**: Organize and manage product categories to enhance navigation and improve the overall user shopping experience.
+- **Promotion Management**: Create and manage promotional campaigns, discounts, and special offers to drive sales.
+- **Review Management**: Monitor and manage product reviews, including approval, deletion, and responses to customer feedback.
+- **Account Management**: Handle user account details, permissions, and roles, ensuring secure and efficient user management.
+- **Order Cancellation Reasons Management**: Define, manage, and update reasons for order cancellations, ensuring clear communication.
+
+### **User Module**
+
+The User Module enhances the user experience with essential features for smooth interaction and account management:
+
+- **Authentication**: 
+  - **Register & Login**: Secure user registration and login.
+  - **Forgot Password**: Account recovery with secure password reset.
+- **Order Management**:
+  - View order history, place new orders, and cancel them as needed.
+- **Cart Management**: 
+  - Add, update, or remove products in the shopping cart.
+- **Wishlist Management**: Maintain a list of favorite products for future purchases.
+- **Product & Review Viewing**: Browse products, view reviews, and explore categories.
+- **User Information Management**: Update personal details such as phone number, email, and password.
+- **Payment Options**: Choose between CASH or VNPAY for payment.
 
 ## Installation & Setup
 
@@ -90,9 +92,33 @@ The project uses a variety of modern technologies to ensure scalability, efficie
    cd bookshop-website
    ```
 
-2. **Set up MySQL**:
-   - Create a new database named `bookshop`.
-   - Update your MySQL credentials in `src/main/resources/application.properties`.
+2. **Set up the `application.properties` file**:
+
+   Create the file `src/main/resources/application.properties` and add the following configurations:
+
+   ```properties
+   server.port = 8085
+
+   # Springdoc
+   springdoc.show-actuator = false
+   springdoc.swagger-ui.path=/api
+
+   # Database Configuration
+   spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+   spring.datasource.url=jdbc:mysql://localhost:3306/your_database_name
+   spring.datasource.username=your_username
+   spring.datasource.password=your_password
+
+   # VNPAY Configuration
+   # Refer to the VNPAY documentation for detailed setup: 
+   # https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html
+   vnpay.baseUrl=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+   vnpay.HashSecret=your_secret_key
+   vnpay.TmnCode=your_terminal_code
+   vnpay.Version=2.1.0
+   vnpay.Command=pay
+   vnpay.orderType=order-type
+   ```
 
 3. **Build and run the application**:
    ```bash
@@ -107,7 +133,13 @@ The project uses a variety of modern technologies to ensure scalability, efficie
 
 To run the application using Docker:
 
-1. **Build and start the container**:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/tutungduong/bookshop-website.git
+   cd bookshop-website
+   ```
+
+2. **Build and start the container**:
    ```bash
    docker-compose up --build
    ```
