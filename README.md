@@ -10,6 +10,8 @@
 ---
 
 <!-- Badges -->
+<div align="center">
+  
 ![GitHub stars](https://img.shields.io/github/stars/tutungduong/bookshop-website?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/tutungduong/bookshop-website?style=social)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/tutungduong/bookshop-website)
@@ -17,6 +19,8 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/tutungduong/bookshop-website?color=2b9348)
 ![GitHub license](https://img.shields.io/github/license/tutungduong/bookshop-website?color=2b9348)
 [![LinkedIn Follow](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/tutungduong/)
+
+</div>
 
 ---
 
