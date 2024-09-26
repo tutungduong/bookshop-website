@@ -16,8 +16,9 @@
 	<properties>
 		<java.version>17</java.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
-		 <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<io.jsonwebtoken.version>0.9.1</io.jsonwebtoken.version>
+		<rsql-jpa-spring-boot-starter.version>6.0.23</rsql-jpa-spring-boot-starter.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -124,6 +125,13 @@
 		  <artifactId>jaxb-api</artifactId>
 		  <version>2.3.0</version>
 		</dependency>
+
+        <!--==================== RSQL JPA ====================-->
+		<dependency>
+            <groupId>io.github.perplexhub</groupId>
+            <artifactId>rsql-jpa-spring-boot-starter</artifactId>
+            <version>${rsql-jpa-spring-boot-starter.version}</version>
+        </dependency>
 
 
 	</dependencies>

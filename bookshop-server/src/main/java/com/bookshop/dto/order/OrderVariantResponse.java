@@ -1,6 +1,5 @@
 package com.bookshop.dto.order;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -28,6 +27,7 @@ public class OrderVariantResponse {
             private Long id;
             private String name;
             private String author;
+            private String slug;
             private Instant createdAt;
             private Instant updatedAt;
         }

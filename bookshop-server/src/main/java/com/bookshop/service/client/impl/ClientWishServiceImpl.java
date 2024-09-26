@@ -3,6 +3,7 @@ package com.bookshop.service.client.impl;
 
 import com.bookshop.constant.FieldName;
 import com.bookshop.constant.ResourceName;
+import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.client.ClientWishRequest;
 import com.bookshop.dto.client.ClientWishResponse;
 import com.bookshop.entity.authentication.User;
@@ -14,7 +15,8 @@ import com.bookshop.repository.client.WishRepository;
 import com.bookshop.repository.product.ProductRepository;
 import com.bookshop.service.client.ClientWishService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,15 +31,13 @@ public class ClientWishServiceImpl implements ClientWishService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    @Override
-    public List<ClientWishResponse> get(String username) {
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
-
-        return wishRepository.findById(user.getId()).stream()
-                .map(this::entityToResponse)
-                .collect(Collectors.toList());
+   @Override
+    public ListResponse<ClientWishResponse> getAllWishes(String username, int page, int size, String sort, String filter) {
+        Page<Wish> wishes = wishRepository.findAllByUsername(username, sort, filter, PageRequest.of(page - 1, size));
+        List<ClientWishResponse> entityResponse = wishes.getContent().stream()
+            .map(this::entityToResponse)
+            .collect(Collectors.toList());
+        return new ListResponse<>(entityResponse, wishes);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ClientWishServiceImpl implements ClientWishService {
                 .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getUserId()));
 
 
-        Wish wish = mapToEntity(request);
+        Wish wish = requestToEntity(request);
         wish = wishRepository.save(wish);
         return entityToResponse(wish);
 
@@ -57,7 +57,6 @@ public class ClientWishServiceImpl implements ClientWishService {
     public void delete(List<Long> ids) {
         wishRepository.deleteAllById(ids);
     }
-
 
     private ClientWishResponse entityToResponse(Wish wish){
         ClientWishResponse response = new ClientWishResponse();
@@ -83,7 +82,7 @@ public class ClientWishServiceImpl implements ClientWishService {
         return response;
     }
 
-    private Wish mapToEntity(ClientWishRequest request){
+    private Wish requestToEntity(ClientWishRequest request){
         Wish wish = new Wish();
 
         User user = userRepository.findById(request.getUserId()).orElseThrow();

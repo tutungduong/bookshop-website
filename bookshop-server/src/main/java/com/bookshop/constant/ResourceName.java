@@ -9,7 +9,10 @@ public interface ResourceName {
     String VARIANT = "Variant";
     String IMAGE = "Image";
     String ORDER = "Order";
+    String PROMOTION = "Promotion";
+    String REVIEW = "Review";
     String ORDER_VARIANT = "OrderVariant";
     String CART = "Cart";
     String PAYMENT_METHOD = "PaymentMethod";
+    String ORDER_CANCELLATION_REASON = "OrderCancellationReason";
 }

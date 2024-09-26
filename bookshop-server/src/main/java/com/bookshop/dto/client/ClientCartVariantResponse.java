@@ -1,5 +1,6 @@
 package com.bookshop.dto.client;
 
+import jakarta.annotation.Nullable;
 import lombok.Data;
 
 @Data
@@ -18,8 +19,12 @@ public class ClientCartVariantResponse {
         public static class ClientProductResponse {
             private Long productId;
             private String productName;
-            private String Author;
-//            private String productThumbnail;
+            private String productSlug;
+            private String productAuthor;
+            @Nullable
+            private String productThumbnail;
+            @Nullable
+            private ClientPromotionResponse productPromotion;
         }
     }
 }

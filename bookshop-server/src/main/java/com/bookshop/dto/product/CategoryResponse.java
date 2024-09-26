@@ -9,9 +9,11 @@ import java.time.Instant;
 public class CategoryResponse {
     private Long id;
     private String name;
-    private String thumbnail;
+    private String slug;
     private String description;
+    private String thumbnail;
     private Instant createdAt;
     private Instant updatedAt;
     private Integer status;
+
 }

@@ -1,10 +1,11 @@
 package com.bookshop.service;
 
+import com.bookshop.dto.ListResponse;
+
 import java.util.List;
 
 public interface CrudService<ID,I,O> {
-//    ListResponse<O> findAll(int page, int size, String sort, String filter, String search, boolean all);
-    List<O> findAll();
+    ListResponse<O> findAll(int page, int size, String sort, String filter, String search, boolean all);
 
     O findById(ID id);
 

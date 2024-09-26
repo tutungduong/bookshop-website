@@ -4,6 +4,7 @@ import com.bookshop.entity.BaseEntity;
 import com.bookshop.entity.cart.Cart;
 import com.bookshop.entity.general.Wish;
 import com.bookshop.entity.order.Order;
+import com.bookshop.entity.review.Review;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -65,6 +66,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Wish> wishes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews = new ArrayList<>();
+
 
     @OneToOne(mappedBy = "user")
     private Verification verification;
