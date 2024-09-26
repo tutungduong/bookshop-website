@@ -1,11 +1,14 @@
 package com.bookshop.service.order.impl;
 
 
+import com.bookshop.config.payment.VNPAY.VNPAYHttpClient;
 import com.bookshop.constant.AppConstants;
 import com.bookshop.constant.FieldName;
 import com.bookshop.constant.ResourceName;
 import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.client.*;
+import com.bookshop.dto.payment.VNPAY.VNPAYRequest;
+import com.bookshop.dto.payment.VNPAY.VNPAYResponse;
 import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cart.Cart;
 import com.bookshop.entity.cashbook.PaymentMethodType;
@@ -42,6 +45,8 @@ public class ClientOrderServiceImpl implements ClientOrderService {
     private final CartRepository cartRepository;
     private final PromotionRepository promotionRepository;
     private final ReviewRepository reviewRepository;
+
+    private final VNPAYHttpClient vnpayHttpClient;
 
 
     @Override
@@ -135,14 +140,29 @@ public class ClientOrderServiceImpl implements ClientOrderService {
 
         response.setOrderCode(order.getCode());
         response.setOrderPaymentMethodType(order.getPaymentMethodType());
-
+        // (3) Kiểm tra hình thức thanh toán
       if (request.getPaymentMethodType() == PaymentMethodType.CASH) {
              orderRepository.save(order);
       }
       else if (request.getPaymentMethodType() == PaymentMethodType.VNPAY) {
-          // Will update Method Payment VNPAY later
+
            try{
+               // (3.2.1) Tính tổng tiền theo VND
+               VNPAYRequest vnpayRequest = new VNPAYRequest();
+
+//               totalPay = totalPay.multiply(BigDecimal.valueOf(100));
+
+               vnpayRequest.setAmount(totalPay);
+               vnpayRequest.setApplicationContext(new VNPAYRequest.PayPalAppContext()
+                       .setReturnUrl(AppConstants.BACKEND_HOST + "/client-api/orders/success")
+                       .setCancelUrl(AppConstants.BACKEND_HOST + "/client-api/orders/cancel"));
+
+               VNPAYResponse vnpayResponse = vnpayHttpClient.createPaypalTransaction(vnpayRequest);
+
                 orderRepository.save(order);
+
+//                 (3.2.4) Trả về đường dẫn checkout cho user
+                response.setOrderPaypalCheckoutLink(vnpayResponse.getPaymentUrl());
           }
           catch (Exception e) {
                 throw new RuntimeException("Cannot create VNPAY transaction request!" + e);

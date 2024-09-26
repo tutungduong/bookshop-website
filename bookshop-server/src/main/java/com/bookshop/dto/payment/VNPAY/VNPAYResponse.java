@@ -1,18 +1,30 @@
 package com.bookshop.dto.payment.VNPAY;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 
 @Data
 public class VNPAYResponse {
-    @JsonProperty("code")
+//    @JsonProperty("id")
+//    private String id;
+//
+//   @JsonProperty("status")
+//    private OrderStatus status;
+//    @JsonProperty("links")
+//    private List<Link> links;
+//
+//     @Data
+//    public static class Link {
+//        @JsonProperty("href")
+//        private String href;
+//        @JsonProperty("rel")
+//        private String rel;
+//        @JsonProperty("method")
+//        private String method;
+//    }
+
     private String code;
-
-    @JsonProperty("message")
     private String message;
-
-    @JsonProperty("paymentUrl")
     private String paymentUrl;
 }
