@@ -161,7 +161,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
 
                 orderRepository.save(order);
 
-//                 (3.2.4) Trả về đường dẫn checkout cho users
+//                 (3.2.4) Trả về đường dẫn checkout cho user
                 response.setOrderPaypalCheckoutLink(vnpayResponse.getPaymentUrl());
           }
           catch (Exception e) {
