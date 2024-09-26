@@ -7,6 +7,7 @@ import com.bookshop.constant.FieldName;
 import com.bookshop.constant.ResourceName;
 import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.client.*;
+import com.bookshop.dto.payment.OrderIntent;
 import com.bookshop.dto.payment.VNPAY.VNPAYRequest;
 import com.bookshop.dto.payment.VNPAY.VNPAYResponse;
 import com.bookshop.entity.authentication.User;
@@ -150,19 +151,21 @@ public class ClientOrderServiceImpl implements ClientOrderService {
                // (3.2.1) Tính tổng tiền theo VND
                VNPAYRequest vnpayRequest = new VNPAYRequest();
 
-//               totalPay = totalPay.multiply(BigDecimal.valueOf(100));
+               vnpayRequest.setIntent(OrderIntent.CAPTURE);
 
-               vnpayRequest.setAmount(totalPay);
-               vnpayRequest.setApplicationContext(new VNPAYRequest.PayPalAppContext()
-                       .setReturnUrl(AppConstants.BACKEND_HOST + "/client-api/orders/success")
-                       .setCancelUrl(AppConstants.BACKEND_HOST + "/client-api/orders/cancel"));
+               vnpayRequest.setAmount(String.valueOf(order.getTotalPay().intValue()));
+
+               vnpayRequest.setApplicationContext(new VNPAYRequest.VNPAYAppContext()
+                            .setReturnUrl(AppConstants.BACKEND_HOST + "/client-api/orders/success")
+                            .setCancelUrl(AppConstants.BACKEND_HOST + "/client-api/orders/cancel"));
 
                VNPAYResponse vnpayResponse = vnpayHttpClient.createPaypalTransaction(vnpayRequest);
 
-                orderRepository.save(order);
 
-//                 (3.2.4) Trả về đường dẫn checkout cho user
+                // (3.2.4) Trả về đường dẫn checkout cho user
                 response.setOrderPaypalCheckoutLink(vnpayResponse.getPaymentUrl());
+
+                orderRepository.save(order);
           }
           catch (Exception e) {
                 throw new RuntimeException("Cannot create VNPAY transaction request!" + e);
