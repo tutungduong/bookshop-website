@@ -1,6 +1,6 @@
 package com.bookshop.dto.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.annotation.Nullable;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -22,6 +22,10 @@ public class ClientOrderVariantResponse {
         public static class ClientProductResponse {
             private Long productId;
             private String productName;
+            private String productSlug;
+            @Nullable
+            private String productThumbnail;
+            private boolean productIsReviewed;
         }
     }
 }

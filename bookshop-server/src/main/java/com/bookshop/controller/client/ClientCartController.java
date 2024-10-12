@@ -33,7 +33,7 @@ public class ClientCartController {
     }
 
      @DeleteMapping
-    public ResponseEntity<ObjectNode> deleteCart(@RequestBody List<ClientCartVariantKeyRequest> idRequests) {
+    public ResponseEntity<ObjectNode> deleteCartItems(@RequestBody List<ClientCartVariantKeyRequest> idRequests) {
         clientCartService.delete(idRequests);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
      }
