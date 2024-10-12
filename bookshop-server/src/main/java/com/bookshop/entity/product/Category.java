@@ -9,10 +9,7 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Accessors(chain = true)
 @Entity
 @Table(name = "category")

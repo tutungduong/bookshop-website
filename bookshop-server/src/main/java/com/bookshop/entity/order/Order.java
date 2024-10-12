@@ -6,20 +6,14 @@ import com.bookshop.entity.authentication.User;
 import com.bookshop.entity.cashbook.PaymentMethodType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @Accessors(chain = true)
 @Entity
 @Table(name = "orders")

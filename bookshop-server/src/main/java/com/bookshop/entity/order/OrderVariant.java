@@ -6,10 +6,7 @@ import com.bookshop.entity.product.Product;
 import com.bookshop.entity.product.Variant;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
@@ -17,10 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Accessors(chain = true)
 @Entity
 @Table(name = "order_variant")
