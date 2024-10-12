@@ -2,9 +2,11 @@ package com.bookshop.controller.product;
 
 
 import com.bookshop.constant.AppConstants;
+import com.bookshop.dto.ListResponse;
 import com.bookshop.dto.product.CategoryRequest;
 import com.bookshop.dto.product.CategoryResponse;
 import com.bookshop.service.product.CategoryService;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,15 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("")
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll());
+    public ResponseEntity<ListResponse<CategoryResponse>> getAllCategories(
+           @RequestParam(name = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+            @RequestParam(name = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(name = "sort", defaultValue = AppConstants.DEFAULT_SORT) String sort,
+            @RequestParam(name = "filter", required = false) @Nullable String filter,
+            @RequestParam(name = "search", required = false) @Nullable String search,
+            @RequestParam(name = "all", required = false) boolean all
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.findAll(page, size, sort, filter, search, all));
     }
 
     @GetMapping("/{id}")

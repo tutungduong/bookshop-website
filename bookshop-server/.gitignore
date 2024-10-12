@@ -36,3 +36,4 @@ build/
 
 # Ignore resources and mapper directories
 **/src/main/resources/
+image-dir

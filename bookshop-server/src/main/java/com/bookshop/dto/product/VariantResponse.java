@@ -23,5 +23,6 @@ public class VariantResponse {
         private Instant updatedAt;
         private String name;
         private String author;
+        private String slug;
     }
 }

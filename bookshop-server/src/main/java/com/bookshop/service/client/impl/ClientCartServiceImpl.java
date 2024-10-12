@@ -17,10 +17,12 @@ import com.bookshop.repository.authentication.UserRepository;
 import com.bookshop.repository.cart.CartRepository;
 import com.bookshop.repository.cart.CartVariantRepository;
 import com.bookshop.repository.product.VariantRepository;
+import com.bookshop.repository.promotion.PromotionRepository;
 import com.bookshop.service.client.ClientCartService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,30 +34,31 @@ public class ClientCartServiceImpl implements ClientCartService {
     private final CartVariantRepository cartVariantRepository;
     private final VariantRepository variantRepository;
     private final UserRepository userRepository;
+    private final PromotionRepository promotionRepository;
 
 
     @Override
     public List<ClientCartResponse> get(String username) {
 
         return cartRepository.findByUsername(username).stream()
-                .map(this::mapToResponse)
+                .map(this::entityToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ClientCartResponse save(ClientCartRequest request) {
-        Cart cart;
+        final Cart cartBeforeSave;
 
         if (request.getCartId() != null) {
-            cart = cartRepository.findById(request.getCartId())
+            cartBeforeSave = cartRepository.findById(request.getCartId())
                     .map(existingEntity -> partialUpdate(existingEntity, request))
-                    .orElseGet(() -> mapToEntity(request));
+                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.CART, FieldName.ID, request.getCartId()));
         } else {
-            cart = mapToEntity(request);
+            cartBeforeSave = mapToEntity(request);
         }
 
-        cart = cartRepository.save(cart);
-        return mapToResponse(cart);
+        Cart  cart = cartRepository.save(cartBeforeSave);
+        return entityToResponse(cart);
     }
 
     @Override
@@ -67,6 +70,7 @@ public class ClientCartServiceImpl implements ClientCartService {
     }
 
     private Cart mapToEntity(ClientCartRequest request) {
+
     Cart cart = new Cart();
 
     User user = userRepository.findById(request.getUserId())
@@ -76,62 +80,56 @@ public class ClientCartServiceImpl implements ClientCartService {
     cart.setStatus(request.getStatus());
 
     Set<CartVariant> cartVariants = request.getCartItems().stream()
-        .map(clientCartVariantRequest -> {
-            CartVariant cartVariant = new CartVariant();
-            cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
+            .map(clientCartVariantRequest -> {
+                CartVariant cartVariant = new CartVariant();
+                cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
 
+                Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
+                        .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,
+                                clientCartVariantRequest.getVariantId()));
 
-            Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
-                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,
-                    clientCartVariantRequest.getVariantId()));
-
-            cartVariant.setVariant(variant);
-            cartVariant.setCart(cart);
-            return cartVariant;
-        }).collect(Collectors.toSet());
+                cartVariant.setVariant(variant);
+                cartVariant.setCart(cart);
+                return cartVariant;
+            }).collect(Collectors.toSet());
 
     cart.setCartVariants(cartVariants);
-
     return cart;
 }
 
 
     private Cart partialUpdate(Cart cart, ClientCartRequest request) {
 
-    if (request.getUserId() != null) {
-        cart.setUser(userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getUserId())));
-    }
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceName.USER, FieldName.ID, request.getCartId()));
 
-    if (request.getCartItems() != null && !request.getCartItems().isEmpty()) {
-        Set<CartVariant> cartVariants = request.getCartItems().stream()
-            .map(clientCartVariantRequest -> {
-                CartVariant cartVariant = new CartVariant();
-                cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
+        cart.setUser(user);
+        cart.setStatus(request.getStatus());
 
-                // Find the variant and set it to cartVariant
-                Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
-                    .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,
-                        clientCartVariantRequest.getVariantId()));
-                cartVariant.setVariant(variant);
+        cart.setCartVariants(request.getCartItems().stream()
+                .map(clientCartVariantRequest -> {
+                    CartVariant cartVariant = new CartVariant();
+                    cartVariant.setQuantity(clientCartVariantRequest.getQuantity());
 
-                // Set the cart to the cartVariant
-                cartVariant.setCart(cart);
+                    Variant variant = variantRepository.findById(clientCartVariantRequest.getVariantId())
+                            .orElseThrow(() -> new ResourceNotFoundException(ResourceName.VARIANT, FieldName.ID,
+                                    clientCartVariantRequest.getVariantId()));
 
-                return cartVariant;
-            })
-            .collect(Collectors.toSet());
+                    cartVariant.setVariant(variant);
+                    cartVariant.setCart(cart);
+                    return cartVariant;
+                }).collect(Collectors.toSet()));
 
-        cart.setCartVariants(cartVariants);
-    }
-    cart.setStatus(request.getStatus());
+        cart.setUpdatedAt(Instant.now());
 
-    return cart;
+        return cart;
 }
 
-    private ClientCartResponse mapToResponse(Cart cart) {
+    private ClientCartResponse entityToResponse(Cart cart) {
         ClientCartResponse response = new ClientCartResponse();
+
         response.setCartId(cart.getId());
+        response.setStatus(cart.getStatus());
 
         Set<ClientCartVariantResponse> cartVariantResponses = cart.getCartVariants().stream()
                 .map(cartVariant -> {
@@ -148,16 +146,19 @@ public class ClientCartServiceImpl implements ClientCartService {
                             new ClientCartVariantResponse.ClientVariantResponse.ClientProductResponse();
                     clientProductResponse.setProductId(cartVariant.getVariant().getProduct().getId());
                     clientProductResponse.setProductName(cartVariant.getVariant().getProduct().getName());
-                    clientProductResponse.setAuthor(cartVariant.getVariant().getProduct().getAuthor());
+                    clientProductResponse.setProductSlug(cartVariant.getVariant().getProduct().getSlug());
+                    clientProductResponse.setProductAuthor(cartVariant.getVariant().getProduct().getAuthor());
+
                     clientVariantResponse.setVariantProduct(clientProductResponse);
                     clientCartVariantResponse.setCartItemVariant(clientVariantResponse);
+
 
                     return clientCartVariantResponse;
                 })
                 .collect(Collectors.toSet());
 
         response.setCartItems(cartVariantResponses);
-        response.setStatus(cart.getStatus());
+
         return response;
     }
 }
