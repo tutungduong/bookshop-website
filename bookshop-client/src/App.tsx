@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import 'dayjs/locale/vi';
+import '@smastrom/react-rating/style.css';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
+import { ModalsProvider } from '@mantine/modals';
+import AdminDashboard from 'pages/AdminDashboard';
+import Admin from 'pages/Admin';
+import AdminError from 'components/AdminError/AdminError';
+
+const queryClient = new QueryClient();
 
 function App() {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
+        <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+          <NotificationsProvider>
+            <ModalsProvider>
+              <Routes>
+                <Route path='/admin' element={<Admin/>}>
+                  <Route path="/admin/*" element={<AdminError/>}/>
+                  <Route index element={<AdminDashboard/>}/>
+                </Route>
+              </Routes>
+            </ModalsProvider>
+          </NotificationsProvider>
+        </MantineProvider>
+      </ColorSchemeProvider>
+      <ReactQueryDevtools initialIsOpen={false}/>
+    </QueryClientProvider>
   );
 }
+
 
 export default App;
