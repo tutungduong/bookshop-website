@@ -9,7 +9,11 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { ModalsProvider } from '@mantine/modals';
 import AdminDashboard from 'pages/AdminDashboard';
 import Admin from 'pages/Admin';
-import AdminError from 'components/AdminError/AdminError';
+import { ScrollToTop,AdminError } from 'components';
+import CategoryManage from 'pages/category/CategoryManage';
+import ManagerPath from 'constants/ManagerPath';
+import CategoryCreate from 'pages/category/CategoryCreate';
+import CategoryUpdate from 'pages/category/CategoryUpdate';
 
 const queryClient = new QueryClient();
 
@@ -24,10 +28,17 @@ function App() {
         <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
           <NotificationsProvider>
             <ModalsProvider>
+              <ScrollToTop/>
               <Routes>
                 <Route path='/admin' element={<Admin/>}>
                   <Route path="/admin/*" element={<AdminError/>}/>
                   <Route index element={<AdminDashboard/>}/>
+
+                  {/* CATEGORY */}
+                  <Route path={ManagerPath.CATEGORY} element={<CategoryManage/>}/>
+                  <Route path={ManagerPath.CATEGORY + '/create'} element={<CategoryCreate/>}/>
+                  <Route path={ManagerPath.CATEGORY + '/update/:id'} element={<CategoryUpdate/>}/>
+                  
                 </Route>
               </Routes>
             </ModalsProvider>

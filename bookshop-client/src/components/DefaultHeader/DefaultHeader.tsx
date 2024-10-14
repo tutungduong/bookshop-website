@@ -3,7 +3,7 @@ import { ActionIcon, Box, Burger, createStyles, Group, Header, MediaQuery, useMa
 import { Bell, Browser, Icon, Logout, Messages, MoonStars, Search, Sun, User } from 'tabler-icons-react';
 import { Link } from 'react-router-dom';
 import useAppStore from 'stores/use-app-store';
-// import { ElectroLogo } from 'components';
+import { Logo } from 'components';
 import NotifyUtils from 'utils/NotifyUtils';
 // import useAdminAuthStore from 'stores/use-admin-auth-store';
 
@@ -125,7 +125,7 @@ export function DefaultHeader() {
             <Burger opened={opened} onClick={toggleOpened} size="sm"/>
           </MediaQuery>
           <Box component={Link} to="/admin">
-            {/* <ElectroLogo/> */}
+            <Logo/>
           </Box>
         </Group>
 

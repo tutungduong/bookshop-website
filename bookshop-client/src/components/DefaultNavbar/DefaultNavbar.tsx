@@ -39,26 +39,26 @@ const navbarLinks: NavbarLink[] = [
     label: 'Trang chủ',
     icon: Home,
   },
-  {
-    link: '/admin/address',
-    label: 'Địa chỉ',
-    icon: AddressBook,
-    childLinks: [
-      {
-        link: '/admin/address/province',
-        label: 'Tỉnh thành',
-      },
-      {
-        link: '/admin/address/district',
-        label: 'Quận huyện',
-      },
-      {
-        link: '/admin/address/ward',
-        label: 'Phường xã',
-      },
-    ],
-    disableForEmployee: true,
-  },
+  // {
+  //   link: '/admin/address',
+  //   label: 'Địa chỉ',
+  //   icon: AddressBook,
+  //   childLinks: [
+  //     {
+  //       link: '/admin/address/province',
+  //       label: 'Tỉnh thành',
+  //     },
+  //     {
+  //       link: '/admin/address/district',
+  //       label: 'Quận huyện',
+  //     },
+  //     {
+  //       link: '/admin/address/ward',
+  //       label: 'Phường xã',
+  //     },
+  //   ],
+  //   disableForEmployee: true,
+  // },
   {
     link: '/admin/user',
     label: 'Người dùng',
